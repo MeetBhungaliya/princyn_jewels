@@ -27,7 +27,7 @@ export function Brand({ compact = false, className = "" }: BrandProps) {
         className="object-contain"
       />
 
-      <div className="text-left text-primary">
+      <div className="text-center text-primary">
         <h1 className={`${titleClass} transition-all group-hover:text-primary-hover group-hover:scale-[1.02]`}>
           Princyn
         </h1>

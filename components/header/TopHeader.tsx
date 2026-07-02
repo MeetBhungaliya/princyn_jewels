@@ -9,7 +9,7 @@ export function TopHeader() {
         <SocialLinks />
       </div>
 
-      <div className="flex flex-1 justify-center lg:w-1/3">
+      <div className="flex flex-1 justify-start lg:w-1/3">
         <div className="lg:hidden flex items-center">
           <Brand compact />
         </div>
