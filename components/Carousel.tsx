@@ -32,6 +32,11 @@ const DEFAULT_BANNERS: Banner[] = [
     imageUrl: "/carousel/2.png",
     altText: "Jewelry promotion slide two",
   },
+  {
+    id: 2,
+    imageUrl: "/carousel/3.png",
+    altText: "Jewelry promotion slide three",
+  },
 ];
 
 export function Carousel({

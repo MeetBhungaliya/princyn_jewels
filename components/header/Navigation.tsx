@@ -23,12 +23,12 @@ export function Navigation() {
     <NavigationMenu className="max-w-full" viewport={false}>
       <NavigationMenuList className="flex-wrap gap-1.5">
         {navigation.map((item) => {
-          if (!item.items) {
+          if (!item?.items) {
             return (
               <NavigationMenuItem key={item.title}>
                 <NavigationMenuLink asChild className="hover:bg-transparent">
                   <Link
-                    href={item.href!}
+                    href={item.href || "#"}
                     className={`relative inline-flex h-9 items-center px-3 text-[0.82rem] font-semibold uppercase tracking-[0.24em] transition-colors duration-300 hover:text-primary ${
                       pathname === item.href
                         ? "text-primary"

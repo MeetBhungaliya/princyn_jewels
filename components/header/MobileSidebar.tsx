@@ -176,7 +176,7 @@ function AccordionItem({
         </>
       ) : (
         <Link
-          href={item.href!}
+          href={item.href || "#"}
           className="flex items-center justify-between px-5 py-3.5 transition-colors duration-200"
           style={{
             color: isActive ? GOLD : "var(--color-foreground)",

@@ -75,7 +75,6 @@ export const SwitchMode: FC<SwitchModeProps> = ({
       {/* SLIDING KNOB */}
       <motion.div
         layout
-        layoutId="switch-knob"
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
         className="absolute rounded-full border-2 z-30"
         style={{

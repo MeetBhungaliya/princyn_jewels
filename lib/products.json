@@ -1,0 +1,170 @@
+{
+  "men": [
+    {
+      "id": "m1",
+      "name": "Classic Gold Signet Ring",
+      "price": "$1,299",
+      "rating": 4.9,
+      "reviews": 24,
+      "image": "/shopByCategory/men.jpeg",
+      "tag": "Best Seller",
+      "metal": "18K Yellow Gold"
+    },
+    {
+      "id": "m2",
+      "name": "Platinum Curb Link Bracelet",
+      "price": "$3,450",
+      "rating": 4.8,
+      "reviews": 12,
+      "image": "/banner2.png",
+      "tag": "New",
+      "metal": "Platinum"
+    },
+    {
+      "id": "m3",
+      "name": "Modern Diamond Band",
+      "price": "$1,899",
+      "rating": 4.7,
+      "reviews": 18,
+      "image": "/banner1.jpeg",
+      "tag": "Premium",
+      "metal": "White Gold & Diamonds"
+    },
+    {
+      "id": "m4",
+      "name": "Gold Textured Cufflinks",
+      "price": "$850",
+      "rating": 5.0,
+      "reviews": 8,
+      "image": "/shopByCategory/men.jpeg",
+      "tag": "Classic",
+      "metal": "22K Gold"
+    }
+  ],
+  "women": [
+    {
+      "id": "w1",
+      "name": "Eternal Diamond Solitaire Ring",
+      "price": "$4,999",
+      "rating": 5.0,
+      "reviews": 42,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Signature",
+      "metal": "18K Rose Gold"
+    },
+    {
+      "id": "w2",
+      "name": "Royal Emerald & Diamond Necklace",
+      "price": "$8,200",
+      "rating": 4.9,
+      "reviews": 16,
+      "image": "/banner1.jpeg",
+      "tag": "Luxury",
+      "metal": "18K Yellow Gold"
+    },
+    {
+      "id": "w3",
+      "name": "Graceful Pearl Drop Earrings",
+      "price": "$1,150",
+      "rating": 4.8,
+      "reviews": 31,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Best Seller",
+      "metal": "14K White Gold"
+    },
+    {
+      "id": "w4",
+      "name": "Tennis Diamond Bracelet",
+      "price": "$6,500",
+      "rating": 4.9,
+      "reviews": 20,
+      "image": "/banner2.png",
+      "tag": "Popular",
+      "metal": "Platinum & Diamonds"
+    }
+  ],
+  "kids": [
+    {
+      "id": "k1",
+      "name": "Sweet Heart Gold Pendant",
+      "price": "$350",
+      "rating": 4.8,
+      "reviews": 15,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Kids Favorite",
+      "metal": "14K Yellow Gold"
+    },
+    {
+      "id": "k2",
+      "name": "Precious Little Star Earrings",
+      "price": "$299",
+      "rating": 4.7,
+      "reviews": 19,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Cute",
+      "metal": "14K White Gold"
+    },
+    {
+      "id": "k3",
+      "name": "Adjustable Silver Baby Bangle",
+      "price": "$180",
+      "rating": 4.9,
+      "reviews": 25,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Newborn",
+      "metal": "Sterling Silver"
+    },
+    {
+      "id": "k4",
+      "name": "Lucky Charm Gold Bracelet",
+      "price": "$420",
+      "rating": 5.0,
+      "reviews": 9,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Gift Choice",
+      "metal": "18K Gold"
+    }
+  ],
+  "other": [
+    {
+      "id": "o1",
+      "name": "Heritage Chronograph Watch",
+      "price": "$2,799",
+      "rating": 4.9,
+      "reviews": 37,
+      "image": "/shopByCategory/other.png",
+      "tag": "Heritage",
+      "metal": "Rose Gold & Leather"
+    },
+    {
+      "id": "o2",
+      "name": "Luxury Leather Jewelry Roll",
+      "price": "$250",
+      "rating": 4.6,
+      "reviews": 50,
+      "image": "/shopByCategory/other.png",
+      "tag": "Travel Accessory",
+      "metal": "Genuine Leather"
+    },
+    {
+      "id": "o3",
+      "name": "Unisex Gold Link Keyring",
+      "price": "$499",
+      "rating": 4.8,
+      "reviews": 14,
+      "image": "/shopByCategory/other.png",
+      "tag": "Modern",
+      "metal": "18K Yellow Gold"
+    },
+    {
+      "id": "o4",
+      "name": "Velvet Gift Box Collection",
+      "price": "$85",
+      "rating": 5.0,
+      "reviews": 104,
+      "image": "/shopByCategory/other.png",
+      "tag": "Essentials",
+      "metal": "Premium Velvet"
+    }
+  ]
+}
