@@ -30,7 +30,7 @@ const PROMO_ITEMS: PromoItem[] = [
 
 export function PromoSection() {
   return (
-    <section className="py-12 md:py-16 bg-[var(--color-surface)] border-t border-b border-[var(--color-border)]">
+    <section className="py-12 md:py-16 px-4 md:px-8 bg-[var(--color-surface)] border-t border-b border-[var(--color-border)]">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           {PROMO_ITEMS.map((item) => (
@@ -41,7 +41,7 @@ export function PromoSection() {
               aria-label={`Shop the ${item.title}`}
             >
               {/* Aspect Ratio container for images */}
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--color-background)]">
+              <div className="relative aspect-[2/1] md:aspect-[4/3] w-full overflow-hidden bg-[var(--color-background)]">
                 <Image
                   src={item.imageUrl}
                   alt={item.altText}

@@ -8,7 +8,8 @@
       "reviews": 24,
       "image": "/shopByCategory/men.jpeg",
       "tag": "Best Seller",
-      "metal": "18K Yellow Gold"
+      "metal": "18K Yellow Gold",
+      "subcategory": "ring"
     },
     {
       "id": "m2",
@@ -18,7 +19,8 @@
       "reviews": 12,
       "image": "/banner2.png",
       "tag": "New",
-      "metal": "Platinum"
+      "metal": "Platinum",
+      "subcategory": "bracelet"
     },
     {
       "id": "m3",
@@ -28,17 +30,41 @@
       "reviews": 18,
       "image": "/banner1.jpeg",
       "tag": "Premium",
-      "metal": "White Gold & Diamonds"
+      "metal": "White Gold & Diamonds",
+      "subcategory": "ring"
     },
     {
       "id": "m4",
-      "name": "Gold Textured Cufflinks",
-      "price": "$850",
-      "rating": 5.0,
-      "reviews": 8,
+      "name": "Classic Gold Studs",
+      "price": "$450",
+      "rating": 4.9,
+      "reviews": 9,
       "image": "/shopByCategory/men.jpeg",
       "tag": "Classic",
-      "metal": "22K Gold"
+      "metal": "18K Gold",
+      "subcategory": "studs"
+    },
+    {
+      "id": "m5",
+      "name": "Bold Lion Head Gold Pendant",
+      "price": "$799",
+      "rating": 4.8,
+      "reviews": 15,
+      "image": "/banner1.jpeg",
+      "tag": "New",
+      "metal": "22K Yellow Gold",
+      "subcategory": "pendant"
+    },
+    {
+      "id": "m6",
+      "name": "Heavy 22K Gold Curb Chain",
+      "price": "$2,200",
+      "rating": 5.0,
+      "reviews": 31,
+      "image": "/shopByCategory/men.jpeg",
+      "tag": "Popular",
+      "metal": "22K Gold",
+      "subcategory": "chain"
     }
   ],
   "women": [
@@ -50,7 +76,8 @@
       "reviews": 42,
       "image": "/shopByCategory/women.jpeg",
       "tag": "Signature",
-      "metal": "18K Rose Gold"
+      "metal": "18K Rose Gold",
+      "subcategory": "ring"
     },
     {
       "id": "w2",
@@ -60,7 +87,8 @@
       "reviews": 16,
       "image": "/banner1.jpeg",
       "tag": "Luxury",
-      "metal": "18K Yellow Gold"
+      "metal": "18K Yellow Gold",
+      "subcategory": "necklace"
     },
     {
       "id": "w3",
@@ -70,7 +98,8 @@
       "reviews": 31,
       "image": "/shopByCategory/women.jpeg",
       "tag": "Best Seller",
-      "metal": "14K White Gold"
+      "metal": "14K White Gold",
+      "subcategory": "earring"
     },
     {
       "id": "w4",
@@ -80,7 +109,151 @@
       "reviews": 20,
       "image": "/banner2.png",
       "tag": "Popular",
-      "metal": "Platinum & Diamonds"
+      "metal": "Platinum & Diamonds",
+      "subcategory": "bracelet"
+    },
+    {
+      "id": "w5",
+      "name": "Diamond Floral Pendant",
+      "price": "$899",
+      "rating": 4.7,
+      "reviews": 14,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Delicate",
+      "metal": "18K Gold & Diamonds",
+      "subcategory": "pendant"
+    },
+    {
+      "id": "w6",
+      "name": "Elegant Gold Rope Chain",
+      "price": "$1,450",
+      "rating": 4.9,
+      "reviews": 25,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Essential",
+      "metal": "18K Yellow Gold",
+      "subcategory": "chain"
+    },
+    {
+      "id": "w7",
+      "name": "Solitaire Diamond Nosepin",
+      "price": "$299",
+      "rating": 4.8,
+      "reviews": 55,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Best Seller",
+      "metal": "18K White Gold",
+      "subcategory": "nosepin"
+    },
+    {
+      "id": "w8",
+      "name": "Sacred Tulsi Mala with Gold Caps",
+      "price": "$599",
+      "rating": 4.9,
+      "reviews": 18,
+      "image": "/banner1.jpeg",
+      "tag": "Traditional",
+      "metal": "22K Gold Caps & Tulsi Beads",
+      "subcategory": "tulsi mala"
+    },
+    {
+      "id": "w9",
+      "name": "Filigree Work Gold Bangle",
+      "price": "$1,850",
+      "rating": 5.0,
+      "reviews": 12,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Artisan",
+      "metal": "22K Gold",
+      "subcategory": "bangle"
+    },
+    {
+      "id": "w10",
+      "name": "Royal Silver Bridal Payal Set",
+      "price": "$750",
+      "rating": 4.9,
+      "reviews": 22,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Bridal Special",
+      "metal": "Sterling Silver (92.5)",
+      "subcategory": "bridal payal"
+    },
+    {
+      "id": "w11",
+      "name": "Delicate Heart Anklet",
+      "price": "$380",
+      "rating": 4.7,
+      "reviews": 19,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Charming",
+      "metal": "14K Gold",
+      "subcategory": "anklet"
+    },
+    {
+      "id": "w12",
+      "name": "Floral Adjustable Toe Rings",
+      "price": "$99",
+      "rating": 4.6,
+      "reviews": 34,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Everyday",
+      "metal": "Sterling Silver",
+      "subcategory": "toe ring"
+    },
+    {
+      "id": "w13",
+      "name": "Heritage Gold Kandora (Waist Belt)",
+      "price": "$3,999",
+      "rating": 5.0,
+      "reviews": 6,
+      "image": "/banner2.png",
+      "tag": "Masterpiece",
+      "metal": "22K Gold",
+      "subcategory": "kandora"
+    },
+    {
+      "id": "w14",
+      "name": "Exquisite Peacock Juda Pin",
+      "price": "$320",
+      "rating": 4.8,
+      "reviews": 15,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Classic",
+      "metal": "Silver with Antique Polish",
+      "subcategory": "juda"
+    },
+    {
+      "id": "w15",
+      "name": "Contemporary Diamond Mangalsutra",
+      "price": "$1,699",
+      "rating": 4.9,
+      "reviews": 28,
+      "image": "/banner1.jpeg",
+      "tag": "Modern",
+      "metal": "18K Gold & Diamonds",
+      "subcategory": "mangalsutra"
+    },
+    {
+      "id": "w16",
+      "name": "Traditional Gold Mangalsutra",
+      "price": "$1,250",
+      "rating": 4.8,
+      "reviews": 40,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Traditional",
+      "metal": "22K Yellow Gold",
+      "subcategory": "normal mangalsutra"
+    },
+    {
+      "id": "w17",
+      "name": "Luxurious Gold Shrimant Rakhi",
+      "price": "$450",
+      "rating": 5.0,
+      "reviews": 11,
+      "image": "/shopByCategory/women.jpeg",
+      "tag": "Festive",
+      "metal": "22K Gold Charm with Silk Thread",
+      "subcategory": "shrimant rakhi"
     }
   ],
   "kids": [
@@ -92,27 +265,30 @@
       "reviews": 15,
       "image": "/shopByCategory/kids.jpeg",
       "tag": "Kids Favorite",
-      "metal": "14K Yellow Gold"
+      "metal": "14K Yellow Gold",
+      "subcategory": "pendant"
     },
     {
       "id": "k2",
-      "name": "Precious Little Star Earrings",
+      "name": "Precious Little Star Studs",
       "price": "$299",
       "rating": 4.7,
       "reviews": 19,
       "image": "/shopByCategory/kids.jpeg",
       "tag": "Cute",
-      "metal": "14K White Gold"
+      "metal": "14K White Gold",
+      "subcategory": "stud"
     },
     {
       "id": "k3",
-      "name": "Adjustable Silver Baby Bangle",
-      "price": "$180",
-      "rating": 4.9,
-      "reviews": 25,
+      "name": "Little Star Gold Ring",
+      "price": "$220",
+      "rating": 4.8,
+      "reviews": 10,
       "image": "/shopByCategory/kids.jpeg",
-      "tag": "Newborn",
-      "metal": "Sterling Silver"
+      "tag": "New",
+      "metal": "14K Yellow Gold",
+      "subcategory": "ring"
     },
     {
       "id": "k4",
@@ -122,7 +298,74 @@
       "reviews": 9,
       "image": "/shopByCategory/kids.jpeg",
       "tag": "Gift Choice",
-      "metal": "18K Gold"
+      "metal": "18K Gold",
+      "subcategory": "bracelet"
+    },
+    {
+      "id": "k5",
+      "name": "Silver Baby Kadli Set",
+      "price": "$150",
+      "rating": 4.9,
+      "reviews": 32,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Adjustable",
+      "metal": "92.5 Sterling Silver",
+      "subcategory": "kadli"
+    },
+    {
+      "id": "k6",
+      "name": "Gold Flower Baby Poncha",
+      "price": "$480",
+      "rating": 5.0,
+      "reviews": 4,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Traditional",
+      "metal": "18K Yellow Gold",
+      "subcategory": "poncha"
+    },
+    {
+      "id": "k7",
+      "name": "Jingle Bell Baby Payal",
+      "price": "$120",
+      "rating": 4.7,
+      "reviews": 18,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Soft Sounds",
+      "metal": "Fine Silver",
+      "subcategory": "payal"
+    },
+    {
+      "id": "k8",
+      "name": "Black Bead Nazariya Bracelet",
+      "price": "$99",
+      "rating": 4.9,
+      "reviews": 50,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Protection",
+      "metal": "Silver with Black Beads",
+      "subcategory": "nazariya"
+    },
+    {
+      "id": "k9",
+      "name": "Silver Baby Kandora",
+      "price": "$280",
+      "rating": 4.8,
+      "reviews": 7,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Traditional",
+      "metal": "Sterling Silver",
+      "subcategory": "kandora"
+    },
+    {
+      "id": "k10",
+      "name": "Kids Delicate Gold Chain",
+      "price": "$299",
+      "rating": 4.8,
+      "reviews": 14,
+      "image": "/shopByCategory/kids.jpeg",
+      "tag": "Daily Wear",
+      "metal": "18K Gold",
+      "subcategory": "chain"
     }
   ],
   "other": [
@@ -132,9 +375,10 @@
       "price": "$2,799",
       "rating": 4.9,
       "reviews": 37,
-      "image": "/shopByCategory/other.png",
+      "image": "/shopByCategory/other.jpeg",
       "tag": "Heritage",
-      "metal": "Rose Gold & Leather"
+      "metal": "Rose Gold & Leather",
+      "subcategory": "watch"
     },
     {
       "id": "o2",
@@ -142,9 +386,10 @@
       "price": "$250",
       "rating": 4.6,
       "reviews": 50,
-      "image": "/shopByCategory/other.png",
+      "image": "/shopByCategory/other.jpeg",
       "tag": "Travel Accessory",
-      "metal": "Genuine Leather"
+      "metal": "Genuine Leather",
+      "subcategory": "storage"
     },
     {
       "id": "o3",
@@ -152,9 +397,10 @@
       "price": "$499",
       "rating": 4.8,
       "reviews": 14,
-      "image": "/shopByCategory/other.png",
+      "image": "/shopByCategory/other.jpeg",
       "tag": "Modern",
-      "metal": "18K Yellow Gold"
+      "metal": "18K Yellow Gold",
+      "subcategory": "keyring"
     },
     {
       "id": "o4",
@@ -162,9 +408,21 @@
       "price": "$85",
       "rating": 5.0,
       "reviews": 104,
-      "image": "/shopByCategory/other.png",
+      "image": "/shopByCategory/other.jpeg",
       "tag": "Essentials",
-      "metal": "Premium Velvet"
+      "metal": "Premium Velvet",
+      "subcategory": "gift box"
+    },
+    {
+      "id": "o5",
+      "name": "Premium Silver Bookmark",
+      "price": "$120",
+      "rating": 4.7,
+      "reviews": 8,
+      "image": "/shopByCategory/other.jpeg",
+      "tag": "Exquisite",
+      "metal": "Sterling Silver",
+      "subcategory": "accessories"
     }
   ]
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { useTheme } from "next-themes";
 import { Menu } from "lucide-react";
 
@@ -48,22 +48,42 @@ import { ThemeSwitcher } from "@/components/header/ThemeSwitcher";
 ───────────────────────────────────────────── */
 export function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Check initial scroll position
+    handleScroll();
+    
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
-      <header className="sticky top-0 z-50 luxury-header">
-        {/* ── Mobile Header: single row, 68px ── */}
+      <header 
+        className={`sticky top-0 z-50 luxury-header border-b transition-all duration-500 ease-in-out ${
+          isScrolled 
+            ? "scrolled shadow-[0_10px_30px_rgba(0,0,0,0.03)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.45)] border-border/30 backdrop-blur-md" 
+            : "border-transparent"
+        }`}
+      >
+        {/* ── Mobile Header: single row, shrinks from 68px to 56px ── */}
         <div
-          className="flex items-center justify-between px-4 lg:hidden"
-          style={{ height: "68px" }}
+          className="flex items-center justify-between px-4 lg:hidden transition-all duration-500 ease-in-out"
+          style={{ height: isScrolled ? "56px" : "68px" }}
         >
           {/* Left: Logo + Brand */}
           <Link href="/" className="flex items-center gap-2.5">
             <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full"
+              className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full transition-all duration-500"
               style={{
                 border: `1.5px solid rgba(var(--color-gold-rgb),0.45)`,
                 backgroundColor: "rgba(var(--color-gold-rgb),0.07)",
+                transform: isScrolled ? "scale(0.9)" : "scale(1)"
               }}
             >
               <Image
@@ -78,13 +98,13 @@ export function Header() {
 
             <div className="leading-none">
               <div
-                className="font-serif text-[1.05rem] uppercase tracking-[0.28em]"
+                className="font-serif text-[0.95rem] uppercase tracking-[0.28em] transition-all duration-500"
                 style={{ color: GOLD }}
               >
                 Princyn
               </div>
               <div
-                className="text-[0.52rem] font-semibold uppercase tracking-[0.6em]"
+                className="text-[0.48rem] font-semibold uppercase tracking-[0.6em] transition-all duration-500"
                 style={{ color: "var(--color-gold-dark)" }}
               >
                 Jewels
@@ -99,9 +119,19 @@ export function Header() {
         {/* ── Desktop Header: two rows ── */}
         <div className="hidden lg:block">
           {/* Row 1: Brand (left) + Theme switcher (right) */}
-          <div
-            className="container mx-auto flex items-center justify-between px-6"
-            style={{ height: "68px" }}
+          <motion.div
+            initial={false}
+            animate={{
+              height: isScrolled ? 0 : 68,
+              opacity: isScrolled ? 0 : 1,
+              y: isScrolled ? -10 : 0
+            }}
+            transition={{
+              height: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
+              opacity: { duration: 0.3, ease: [0.16, 1, 0.3, 1] },
+              y: { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
+            }}
+            className="container mx-auto flex items-center justify-between px-6 overflow-hidden"
           >
             <Link href="/" className="flex items-center gap-3">
               <div
@@ -139,17 +169,32 @@ export function Header() {
             <div className="scale-[0.85] origin-right">
               <ThemeSwitcher />
             </div>
-          </div>
+          </motion.div>
 
           {/* Gold divider between rows */}
-          <div
-            style={{ height: "1px", backgroundColor: "rgba(var(--color-gold-rgb),0.2)" }}
+          <motion.div
+            initial={false}
+            animate={{
+              opacity: isScrolled ? 0 : 1,
+              height: isScrolled ? 0 : 1
+            }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+            style={{ backgroundColor: "rgba(var(--color-gold-rgb),0.2)" }}
           />
 
           {/* Row 2: Nav links centered */}
-          <div className="container mx-auto flex items-center justify-center px-6 py-1.5">
+          <motion.div 
+            initial={false}
+            animate={{
+              paddingTop: isScrolled ? "0.4rem" : "0.375rem",
+              paddingBottom: isScrolled ? "0.4rem" : "0.375rem",
+            }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="container mx-auto flex items-center justify-center px-6"
+          >
             <Navigation />
-          </div>
+          </motion.div>
         </div>
       </header>
 

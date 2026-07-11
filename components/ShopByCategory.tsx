@@ -37,7 +37,7 @@ const CATEGORIES: CategoryItem[] = [
     id: "other",
     name: "Other",
     tagline: "Curated Accessories",
-    imageUrl: "/shopByCategory/other.png",
+    imageUrl: "/shopByCategory/other.jpeg",
     link: "/category/other",
   },
 ];
@@ -58,22 +58,22 @@ export function ShopByCategory() {
         </div>
 
         {/* Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
           {CATEGORIES.map((category) => (
             <Link
               key={category.id}
               href={category.link}
-              className="group relative block aspect-[3/4] overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-md hover:shadow-xl transition-all duration-500 ease-out"
+              className="group relative block aspect-[4/3] overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-md hover:shadow-xl transition-all duration-500 ease-out"
               aria-label={`Shop ${category.name} collection`}
             >
               {/* Image Container */}
-              <div className="relative w-full h-full">
+              <div className="relative w-full h-full bg-black/5">
                 <Image
                   src={category.imageUrl}
                   alt={`${category.name} Category`}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover object-center transform scale-100 group-hover:scale-105 transition-transform duration-700 ease-out"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 50vw"
+                  className="object-contain object-center transition-transform duration-700 ease-out object-cover"
                 />
 
                 {/* Elegant dark gradient overlay for text readability */}

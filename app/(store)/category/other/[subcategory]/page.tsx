@@ -1,6 +1,7 @@
 import CategoryPageTemplate from "@/components/CategoryPageTemplate";
 import Products from "@/lib/products.json";
 import { Product } from "@/components/CategoryPageTemplate";
+import { Metadata } from "next";
 
 const OTHER_SUBCATEGORIES = [
   { id: "watch", name: "Watch" },
@@ -10,7 +11,19 @@ const OTHER_SUBCATEGORIES = [
   { id: "accessories", name: "Accessories" },
 ];
 
-export default function OtherCategoryPage() {
+export async function generateMetadata({ params }: { params: Promise<{ subcategory: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const decodedSub = decodeURIComponent(resolvedParams.subcategory);
+  const sub = OTHER_SUBCATEGORIES.find(s => s.id === decodedSub);
+  return {
+    title: `${sub?.name || 'Accessories'} | Curated Accessories | Princyn Jewels`,
+    description: `Shop our premium ${sub?.name || 'accessories'} in the curated accessories collection. Explore luxury timepieces and premium storage.`
+  };
+}
+
+export default async function OtherSubcategoryPage({ params }: { params: Promise<{ subcategory: string }> }) {
+  const resolvedParams = await params;
+  const decodedSub = decodeURIComponent(resolvedParams.subcategory);
   const products = Products.other as Product[];
 
   return (
@@ -23,6 +36,7 @@ export default function OtherCategoryPage() {
       subcategories={OTHER_SUBCATEGORIES}
       breadcrumbLabel="Curated Accessories"
       categorySlug="other"
+      currentSubcategory={decodedSub}
     />
   );
 }

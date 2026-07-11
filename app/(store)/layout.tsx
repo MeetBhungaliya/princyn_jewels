@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/css/globals.css";
 import Providers from "@/providers";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/header";
+import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -27,8 +30,15 @@ export default function RootLayout({
         className={`${inter.variable} h-full antialiased`}
         suppressHydrationWarning
       >
-        <body className="min-h-full flex flex-col">{children}</body>
+        <body className="min-h-full flex flex-col">
+          <Header />
+          <main className="flex-1 flex flex-col">{children}</main>
+          <Footer />
+          <WhatsAppFloatingButton />
+        </body>
       </html>
     </Providers>
   );
 }
+
+

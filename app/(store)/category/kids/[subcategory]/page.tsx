@@ -1,6 +1,7 @@
 import CategoryPageTemplate from "@/components/CategoryPageTemplate";
 import Products from "@/lib/products.json";
 import { Product } from "@/components/CategoryPageTemplate";
+import { Metadata } from "next";
 
 const KIDS_SUBCATEGORIES = [
   { id: "stud", name: "Stud" },
@@ -16,7 +17,19 @@ const KIDS_SUBCATEGORIES = [
   { id: "kandora", name: "Kandora" },
 ];
 
-export default function KidsCategoryPage() {
+export async function generateMetadata({ params }: { params: Promise<{ subcategory: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const decodedSub = decodeURIComponent(resolvedParams.subcategory);
+  const sub = KIDS_SUBCATEGORIES.find(s => s.id === decodedSub);
+  return {
+    title: `${sub?.name || 'Jewelry'} | Kids Collection | Princyn Jewels`,
+    description: `Shop our premium ${sub?.name || 'jewelry'} in the kids collection. Safe, delicate, and beautifully designed.`
+  };
+}
+
+export default async function KidsSubcategoryPage({ params }: { params: Promise<{ subcategory: string }> }) {
+  const resolvedParams = await params;
+  const decodedSub = decodeURIComponent(resolvedParams.subcategory);
   const products = Products.kids as Product[];
 
   return (
@@ -29,6 +42,7 @@ export default function KidsCategoryPage() {
       subcategories={KIDS_SUBCATEGORIES}
       breadcrumbLabel="Kids Collection"
       categorySlug="kids"
+      currentSubcategory={decodedSub}
     />
   );
 }

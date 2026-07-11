@@ -76,9 +76,9 @@ export function Carousel({
         <CarouselContent className="-ml-0">
           {banners.map((banner) => (
             <CarouselItem key={banner.id} className="pl-0">
-              <div className="relative w-full overflow-hidden">
-                {/* Mobile aspect ratio (square/tall) vs Desktop (wide) */}
-                <div className="relative aspect-square w-full sm:aspect-[4/3] md:aspect-[21/9] lg:aspect-[24/10]">
+              <div className="relative w-full overflow-hidden bg-[var(--color-surface)]">
+                {/* Mobile aspect ratio (wide enough to display the full banner) */}
+                <div className="relative aspect-[4/2] sm:aspect-[16/9] md:aspect-[21/9] lg:aspect-[24/10] w-full">
                   <Image
                     src={banner.imageUrl}
                     alt={banner.altText}

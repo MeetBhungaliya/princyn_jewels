@@ -1,6 +1,7 @@
 import CategoryPageTemplate from "@/components/CategoryPageTemplate";
 import Products from "@/lib/products.json";
 import { Product } from "@/components/CategoryPageTemplate";
+import { Metadata } from "next";
 
 const WOMEN_SUBCATEGORIES = [
   { id: "necklace", name: "Necklace" },
@@ -22,7 +23,19 @@ const WOMEN_SUBCATEGORIES = [
   { id: "shrimant rakhi", name: "Shrimant Rakhi" },
 ];
 
-export default function WomenCategoryPage() {
+export async function generateMetadata({ params }: { params: Promise<{ subcategory: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const decodedSub = decodeURIComponent(resolvedParams.subcategory);
+  const sub = WOMEN_SUBCATEGORIES.find(s => s.id === decodedSub);
+  return {
+    title: `${sub?.name || 'Jewelry'} | Women's Collection | Princyn Jewels`,
+    description: `Shop our premium ${sub?.name || 'jewelry'} in the women's collection. Discover breathtaking rings, necklaces, and earrings.`
+  };
+}
+
+export default async function WomenSubcategoryPage({ params }: { params: Promise<{ subcategory: string }> }) {
+  const resolvedParams = await params;
+  const decodedSub = decodeURIComponent(resolvedParams.subcategory);
   const products = Products.women as Product[];
 
   return (
@@ -35,6 +48,7 @@ export default function WomenCategoryPage() {
       subcategories={WOMEN_SUBCATEGORIES}
       breadcrumbLabel="Women's Collection"
       categorySlug="women"
+      currentSubcategory={decodedSub}
     />
   );
 }
