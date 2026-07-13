@@ -22,16 +22,16 @@ export function Navigation() {
   return (
     <NavigationMenu className="max-w-full" viewport={false}>
       <NavigationMenuList className="flex-wrap gap-1.5">
-        {navigation.map((item) => {
+        {navigation.map((item, i) => {
           if (!item?.items) {
             return (
-              <NavigationMenuItem key={item.title}>
+              <NavigationMenuItem key={item.title + i}>
                 <NavigationMenuLink asChild className="hover:bg-transparent">
                   <Link
                     href={item.href || "#"}
-                    className={`relative inline-flex h-9 items-center px-3 text-[0.82rem] font-semibold uppercase tracking-[0.24em] transition-colors duration-300 hover:text-primary ${
+                    className={`relative inline-flex h-9 items-center px-3 text-[0.82rem] font-semibold uppercase tracking-[0.24em] text-foreground/80 transition-none hover:text-foreground ${
                       pathname === item.href
-                        ? "text-primary"
+                        ? "text-foreground"
                         : "text-foreground/80"
                     }`}
                   >
@@ -43,8 +43,8 @@ export function Navigation() {
           }
 
           return (
-            <NavigationMenuItem key={item.title}>
-              <NavigationMenuTrigger className="relative h-9 rounded-none bg-transparent px-3 text-[0.82rem] font-semibold uppercase tracking-[0.24em] text-foreground/80 transition-colors duration-300 hover:bg-transparent hover:text-primary focus:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-primary dark:hover:bg-transparent">
+            <NavigationMenuItem key={item.title + i}>
+              <NavigationMenuTrigger className="relative h-9 rounded-none bg-transparent px-3 text-[0.82rem] font-semibold uppercase tracking-[0.24em] text-foreground/80 transition-none hover:bg-transparent hover:text-foreground focus:bg-transparent focus:text-foreground data-[state=open]:bg-transparent data-[state=open]:text-foreground dark:hover:bg-transparent">
                 {item.title}
               </NavigationMenuTrigger>
 
@@ -55,10 +55,10 @@ export function Navigation() {
                       <Link
                         key={child.href + child.title}
                         href={child.href}
-                        className="group relative flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-foreground/80 transition-all duration-300 hover:text-primary before:absolute before:inset-x-2 before:bottom-1 before:h-px before:origin-left before:scale-x-0 before:bg-primary before:transition-all before:duration-300 hover:before:scale-x-100"
+                        className="group relative flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-foreground/80 transition-none hover:bg-accent/60 hover:text-foreground before:absolute before:inset-x-2 before:bottom-1 before:h-px before:origin-left before:scale-x-0 before:bg-foreground/60 before:transition-none hover:before:scale-x-100"
                       >
                         <span className="min-w-0 flex-1">{child.title}</span>
-                        <ArrowRight className="size-3.5 shrink-0 text-foreground/50 transition-[transform,opacity,color] duration-300 group-hover:translate-x-1 group-hover:opacity-100 group-hover:text-primary" />
+                        <ArrowRight className="size-3.5 shrink-0 text-foreground/50 transition-none group-hover:translate-x-1 group-hover:opacity-100 group-hover:text-foreground" />
                       </Link>
                     ))}
                   </div>

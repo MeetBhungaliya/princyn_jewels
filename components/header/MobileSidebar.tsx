@@ -5,7 +5,7 @@ import {
   X
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/providers";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -375,7 +375,7 @@ export function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
 
               {navigation.map((item, i) => (
                 <AccordionItem
-                  key={item.title}
+                  key={item.title + i}
                   item={item}
                   isOpen={openIndex === i}
                   onToggle={() => toggle(i)}

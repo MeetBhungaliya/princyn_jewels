@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
-import { type FC } from "react";
+import { useEffect, useState, type FC } from "react";
+import { useTheme } from "@/providers";
 import {
   IoMoon,
   IoMoonOutline,
@@ -33,6 +33,13 @@ export const SwitchMode: FC<SwitchModeProps> = ({
   borderLightColor = "var(--color-border)",
 }) => {
   const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => setMounted(true), 0);
+
+    return () => window.clearTimeout(timeout);
+  }, []);
 
   const isDark = resolvedTheme === "dark";
   const iconSize = height * 0.45;
@@ -46,11 +53,13 @@ export const SwitchMode: FC<SwitchModeProps> = ({
     ? "var(--color-surface)"
     : "var(--color-foreground-secondary)";
 
-  if (!resolvedTheme) {
+  if (!mounted || !resolvedTheme) {
     return (
-      <div
+      <button
+        aria-label="Toggle theme"
+        className="relative flex items-center rounded-full border-2 border-transparent transition-colors"
         style={{ width, height }}
-        className="rounded-full border-2 border-transparent"
+        disabled
       />
     );
   }

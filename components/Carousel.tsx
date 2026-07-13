@@ -16,7 +16,9 @@ import {
 
 export interface Banner {
   id: string | number;
-  imageUrl: string;
+  imageUrl?: string;
+  mobileImageUrl?: string;
+  desktopImageUrl?: string;
   altText: string;
   link?: string;
 }
@@ -24,20 +26,25 @@ export interface Banner {
 const DEFAULT_BANNERS: Banner[] = [
   {
     id: 1,
-    imageUrl: "/carousel/1.png",
+    mobileImageUrl: "/carousel/1M.jpeg",
+    desktopImageUrl: "/carousel/1.jpeg",
     altText: "Jewelry promotion slide one",
   },
   {
     id: 2,
-    imageUrl: "/carousel/2.png",
+    mobileImageUrl: "/carousel/2M.jpeg",
+    desktopImageUrl: "/carousel/2.jpeg",
     altText: "Jewelry promotion slide two",
   },
   {
-    id: 2,
-    imageUrl: "/carousel/3.png",
+    id: 3,
+    mobileImageUrl: "/carousel/3M.jpeg",
+    desktopImageUrl: "/carousel/3.jpeg",
     altText: "Jewelry promotion slide three",
   },
 ];
+
+const BANNER_IMAGE_SIZES = "(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px";
 
 export function Carousel({
   banners = DEFAULT_BANNERS,
@@ -48,51 +55,72 @@ export function Carousel({
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
 
-  const plugin = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true }),
+  const autoplayPlugin = React.useMemo(
+    () => Autoplay({ delay: 5000, stopOnInteraction: true }),
+    [],
   );
 
   React.useEffect(() => {
     if (!api) return;
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap());
-
-    api.on("select", () => {
+    const updateSelection = () => {
+      setCount(api.scrollSnapList().length);
       setCurrent(api.selectedScrollSnap());
-    });
+    };
+
+    updateSelection();
+    api.on("select", updateSelection);
+
+    return () => {
+      api.off("select", updateSelection);
+    };
   }, [api]);
 
   return (
     <div className="relative w-full overflow-hidden">
       <C
         setApi={setApi}
-        plugins={[plugin.current]}
+        plugins={[autoplayPlugin]}
         className="w-full group"
         opts={{ loop: true }}
-        onMouseEnter={plugin.current.stop}
-        onMouseLeave={plugin.current.reset}
+        onMouseEnter={autoplayPlugin.stop}
+        onMouseLeave={autoplayPlugin.reset}
       >
-        <CarouselContent className="-ml-0">
-          {banners.map((banner) => (
-            <CarouselItem key={banner.id} className="pl-0">
-              <div className="relative w-full overflow-hidden bg-[var(--color-surface)]">
-                {/* Mobile aspect ratio (wide enough to display the full banner) */}
-                <div className="relative aspect-[4/2] sm:aspect-[16/9] md:aspect-[21/9] lg:aspect-[24/10] w-full">
-                  <Image
-                    src={banner.imageUrl}
-                    alt={banner.altText}
-                    fill
-                    priority
-                    className="object-cover object-center"
-                    sizes="100vw"
-                  />
-                  {/* Subtle gradient overlay to make dots pop */}
-                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+        <CarouselContent className="ml-0">
+          {banners.map((banner) => {
+            const mobileSrc = banner.mobileImageUrl ?? banner.imageUrl;
+            const desktopSrc = banner.desktopImageUrl ?? banner.imageUrl;
+
+            return (
+              <CarouselItem key={banner.id} className="pl-0">
+                <div className="relative w-full overflow-hidden bg-[var(--color-surface)]">
+                  <div className="relative aspect-[2/2] md:aspect-[21/9] lg:aspect-[24/10] w-full">
+                    {mobileSrc ? (
+                      <Image
+                        src={mobileSrc}
+                        alt={banner.altText}
+                        fill
+                        priority
+                        className="block object-cover object-center md:hidden"
+                        sizes={BANNER_IMAGE_SIZES}
+                      />
+                    ) : null}
+                    {desktopSrc ? (
+                      <Image
+                        src={desktopSrc}
+                        alt={banner.altText}
+                        fill
+                        priority
+                        className="hidden object-cover object-center md:block"
+                        sizes={BANNER_IMAGE_SIZES}
+                      />
+                    ) : null}
+                    <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+                  </div>
                 </div>
-              </div>
-            </CarouselItem>
-          ))}
+              </CarouselItem>
+            );
+          })}
         </CarouselContent>
 
         {/* Navigation Arrows (Hidden on mobile, show on hover on desktop) */}

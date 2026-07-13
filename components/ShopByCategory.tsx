@@ -59,9 +59,9 @@ export function ShopByCategory() {
 
         {/* Categories Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
-          {CATEGORIES.map((category) => (
+          {CATEGORIES.map((category, i) => (
             <Link
-              key={category.id}
+              key={category.id + i}
               href={category.link}
               className="group relative block aspect-[4/3] overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-md hover:shadow-xl transition-all duration-500 ease-out"
               aria-label={`Shop ${category.name} collection`}

@@ -338,9 +338,9 @@ export default function CategoryPageTemplate({
                     onMouseEnter={checkScroll}
                     className="flex items-center gap-2 overflow-x-auto py-1.5 scrollbar-none w-full border-b border-[var(--color-border)]"
                   >
-                    {subcategories.map((sub) => (
+                    {subcategories.map((sub, i) => (
                       <Link
-                        key={sub.id}
+                        key={sub.id + i}
                         href={`/category/${categorySlug}/${sub.id}`}
                         scroll={false}
                         className={`px-4 py-2 rounded-full border text-xs font-medium transition-all whitespace-nowrap capitalize cursor-pointer ${
@@ -370,9 +370,9 @@ export default function CategoryPageTemplate({
                 {/* Products Grid */}
                 {filteredProducts.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                    {filteredProducts.map((product) => (
+                    {filteredProducts.map((product, i) => (
                       <Card
-                        key={product.id}
+                        key={product.id + i}
                         className="group relative flex flex-col justify-between bg-[var(--color-surface)] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 p-0 border border-[var(--color-border)]"
                       >
                         {/* Image Container */}

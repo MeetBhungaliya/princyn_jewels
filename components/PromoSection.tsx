@@ -14,14 +14,14 @@ interface PromoItem {
 const PROMO_ITEMS: PromoItem[] = [
   {
     id: "necklace",
-    imageUrl: "/banner1.jpeg",
+    imageUrl: "/promo/banner1.png",
     altText: "A Necklace That Enhances Your Beauty",
     link: "/collections/necklaces",
     title: "Signature Necklaces Collection",
   },
   {
     id: "gifting",
-    imageUrl: "/banner2.png",
+    imageUrl: "/promo/banner2.png",
     altText: "Gifting Jewelry and Divine Product by Princyn Jewels",
     link: "/collections/divine-gifting",
     title: "Divine & Gift Collection",
@@ -33,9 +33,9 @@ export function PromoSection() {
     <section className="py-12 md:py-16 px-4 md:px-8 bg-[var(--color-surface)] border-t border-b border-[var(--color-border)]">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {PROMO_ITEMS.map((item) => (
+          {PROMO_ITEMS.map((item, i) => (
             <Link
-              key={item.id}
+              key={item.id + i}
               href={item.link}
               className="group relative block overflow-hidden rounded-xl border border-[var(--color-border)] shadow-md hover:shadow-2xl transition-all duration-500 ease-out"
               aria-label={`Shop the ${item.title}`}
