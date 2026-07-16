@@ -55,9 +55,12 @@ export function ThemeProvider({
     const initialResolvedTheme =
       initialTheme === "system" ? getSystemTheme() : initialTheme;
 
-    setThemeState(initialTheme);
-    setResolvedTheme(initialResolvedTheme);
-    applyTheme(initialResolvedTheme);
+    const frame = requestAnimationFrame(() => {
+      setThemeState(initialTheme);
+      setResolvedTheme(initialResolvedTheme);
+      applyTheme(initialResolvedTheme);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   const setTheme = (value: ThemeMode) => {

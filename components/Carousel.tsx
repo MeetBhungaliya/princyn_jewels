@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import * as React from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { cn } from "@/lib/utils";
@@ -23,34 +24,9 @@ export interface Banner {
   link?: string;
 }
 
-const DEFAULT_BANNERS: Banner[] = [
-  {
-    id: 1,
-    mobileImageUrl: "/carousel/1M.jpeg",
-    desktopImageUrl: "/carousel/1.jpeg",
-    altText: "Jewelry promotion slide one",
-  },
-  {
-    id: 2,
-    mobileImageUrl: "/carousel/2M.jpeg",
-    desktopImageUrl: "/carousel/2.jpeg",
-    altText: "Jewelry promotion slide two",
-  },
-  {
-    id: 3,
-    mobileImageUrl: "/carousel/3M.jpeg",
-    desktopImageUrl: "/carousel/3.jpeg",
-    altText: "Jewelry promotion slide three",
-  },
-];
-
 const BANNER_IMAGE_SIZES = "(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1200px";
 
-export function Carousel({
-  banners = DEFAULT_BANNERS,
-}: {
-  banners?: Banner[];
-}) {
+export function Carousel({ banners }: { banners: Banner[] }) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [count, setCount] = React.useState(0);
@@ -76,6 +52,7 @@ export function Carousel({
     };
   }, [api]);
 
+  if (banners.length === 0) return null;
   return (
     <div className="relative w-full overflow-hidden">
       <C
@@ -117,6 +94,7 @@ export function Carousel({
                     ) : null}
                     <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
                   </div>
+                  {banner.link ? <Link href={banner.link} className="absolute inset-0 z-10" aria-label={`Open ${banner.altText}`} /> : null}
                 </div>
               </CarouselItem>
             );

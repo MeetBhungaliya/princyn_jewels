@@ -6,6 +6,8 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/header";
 import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
 
+export const dynamic = "force-dynamic";
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -40,5 +42,4 @@ export default function RootLayout({
     </html>
   );
 }
-
 

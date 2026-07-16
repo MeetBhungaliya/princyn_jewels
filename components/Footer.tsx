@@ -107,7 +107,7 @@ export function Footer() {
                   href="/category/women"
                   className="text-[var(--color-foreground-secondary)] hover:text-[var(--color-primary)] transition-colors duration-200"
                 >
-                  Women's Collection
+                  Women&apos;s Collection
                 </Link>
               </li>
               <li>
@@ -115,7 +115,7 @@ export function Footer() {
                   href="/category/men"
                   className="text-[var(--color-foreground-secondary)] hover:text-[var(--color-primary)] transition-colors duration-200"
                 >
-                  Men's Collection
+                  Men&apos;s Collection
                 </Link>
               </li>
               <li>
@@ -123,7 +123,7 @@ export function Footer() {
                   href="/category/kids"
                   className="text-[var(--color-foreground-secondary)] hover:text-[var(--color-primary)] transition-colors duration-200"
                 >
-                  Kids' Collection
+                  Kids&apos; Collection
                 </Link>
               </li>
               <li>

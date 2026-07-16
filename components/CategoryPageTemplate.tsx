@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import {
   ArrowLeft,
-  Star,
   Gem,
   Sparkles,
   Watch,
@@ -18,7 +17,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -31,13 +29,9 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 export interface Product {
   id: string;
-  name: string;
-  price: string;
-  rating: number;
-  reviews: number;
-  image: string;
-  tag: string;
-  metal: string;
+  title: string;
+  imagePath: string;
+  link?: string | null;
   subcategory: string;
 }
 
@@ -59,7 +53,7 @@ interface CategoryPageTemplateProps {
 }
 
 // Map subcategory IDs to premium lucide icons for rich visual feedback
-const ICON_MAP: Record<string, any> = {
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   // Men's & general
   ring: Gem,
   studs: Sparkles,
@@ -377,14 +371,9 @@ export default function CategoryPageTemplate({
                       >
                         {/* Image Container */}
                         <div className="relative aspect-square w-full overflow-hidden bg-[var(--color-surface-secondary)] border-b border-[var(--color-border)]">
-                          {product.tag && (
-                            <span className="absolute top-3 left-3 z-10 text-[9px] uppercase tracking-widest font-semibold px-2.5 py-1 rounded bg-[var(--color-primary)] text-white">
-                              {product.tag}
-                            </span>
-                          )}
                           <Image
-                            src={product.image}
-                            alt={product.name}
+                            src={product.imagePath}
+                            alt={product.title}
                             fill
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                             className="object-cover object-center transform scale-100 group-hover:scale-105 transition-transform duration-500 ease-out"
@@ -394,41 +383,14 @@ export default function CategoryPageTemplate({
 
                         {/* Info Container */}
                         <CardContent className="p-5 flex flex-col flex-grow">
-                          <span className="text-[10px] uppercase tracking-wider text-[var(--color-primary)] font-medium mb-1.5">
-                            {product.metal}
-                          </span>
                           <h3 className="text-sm font-medium text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 min-h-[40px]">
-                            {product.name}
+                            {product.title}
                           </h3>
-
-                          {/* Rating */}
-                          <div className="flex items-center gap-1.5 mt-2.5 mb-2">
-                            <div className="flex items-center text-amber-500">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-3.5 h-3.5 fill-current ${
-                                    i < Math.floor(product.rating)
-                                      ? "text-amber-500"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                            <span className="text-[10px] text-[var(--color-foreground-secondary)] font-medium">
-                              {product.rating} ({product.reviews})
-                            </span>
-                          </div>
                         </CardContent>
 
                         {/* Price and CTA */}
                         <CardFooter className="mt-auto pt-4 border-t border-[var(--color-border)] flex items-center justify-between p-5 bg-transparent">
-                          <span className="text-base font-semibold text-[var(--color-foreground)]">
-                            {product.price}
-                          </span>
-                          <button className="text-xs uppercase tracking-wider text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] font-semibold transition-colors">
-                            View Details
-                          </button>
+                          {product.link ? <Link href={product.link} className="text-xs uppercase tracking-wider text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] font-semibold transition-colors">View Details</Link> : <span className="text-xs text-[var(--color-foreground-secondary)]">Available in store</span>}
                         </CardFooter>
                       </Card>
                     ))}
@@ -440,7 +402,7 @@ export default function CategoryPageTemplate({
                       No Products Found
                     </h3>
                     <p className="text-xs text-[var(--color-foreground-secondary)] max-w-xs mx-auto mb-6">
-                      We currently don't have any products in this specific
+                      We currently don&apos;t have any products in this specific
                       subcategory.
                     </p>
                     <Link

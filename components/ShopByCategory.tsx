@@ -1,9 +1,7 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 
-interface CategoryItem {
+export interface CategoryItem {
   id: string;
   name: string;
   tagline: string;
@@ -11,38 +9,7 @@ interface CategoryItem {
   link: string;
 }
 
-const CATEGORIES: CategoryItem[] = [
-  {
-    id: "men",
-    name: "Men",
-    tagline: "Bold & Refined",
-    imageUrl: "/shopByCategory/men.jpeg",
-    link: "/category/men",
-  },
-  {
-    id: "women",
-    name: "Women",
-    tagline: "Eternal Elegance",
-    imageUrl: "/shopByCategory/women.jpeg",
-    link: "/category/women",
-  },
-  {
-    id: "kids",
-    name: "Kids",
-    tagline: "Precious Moments",
-    imageUrl: "/shopByCategory/kids.jpeg",
-    link: "/category/kids",
-  },
-  {
-    id: "other",
-    name: "Other",
-    tagline: "Curated Accessories",
-    imageUrl: "/shopByCategory/other.jpeg",
-    link: "/category/other",
-  },
-];
-
-export function ShopByCategory() {
+export function ShopByCategory({ categories }: { categories: CategoryItem[] }) {
   return (
     <section className="py-12 md:py-16 bg-[var(--color-surface-secondary)] border-y border-[var(--color-border)]">
       <div className="container mx-auto px-4 md:px-8">
@@ -59,7 +26,7 @@ export function ShopByCategory() {
 
         {/* Categories Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
-          {CATEGORIES.map((category, i) => (
+          {categories.map((category, i) => (
             <Link
               key={category.id + i}
               href={category.link}
