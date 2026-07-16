@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && db:migrate && npm run db:seed",
-    "start": "next start -p 10000",
+    "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
