@@ -17,6 +17,30 @@ interface Journal {
   entries: JournalEntry[];
 }
 
+const IGNORABLE_SQL_ERROR_CODES = new Set([
+  "42P07", // relation already exists
+  "42710", // duplicate object
+  "23505", // unique violation
+]);
+
+async function executeMigrationStatement(
+  db: PgliteDatabase<any>,
+  statement: string
+): Promise<void> {
+  try {
+    await db.execute(sql.raw(statement));
+  } catch (error: any) {
+    const code = error?.cause?.code ?? error?.code;
+
+    if (code && IGNORABLE_SQL_ERROR_CODES.has(code)) {
+      console.log(`[db] Skipped already-applied migration statement: ${code}`);
+      return;
+    }
+
+    throw error;
+  }
+}
+
 export async function runMigrations(
   db: PgliteDatabase<any>,
   migrationsFolder: string
@@ -60,7 +84,7 @@ export async function runMigrations(
       .filter(Boolean);
 
     for (const statement of statements) {
-      await db.execute(sql.raw(statement));
+      await executeMigrationStatement(db, statement);
     }
 
     await db.execute(
