@@ -12,7 +12,7 @@ const mimeTypes: Record<string, string> = {
   svg: "image/svg+xml",
 };
 
-const defaultUploadPath = process.env.UPLOAD_PATH;
+const defaultUploadPath = '/var/www/storage/uploads';
 
 function getUploadRoot() {
   const configuredRoot = process.env.UPLOAD_PATH?.trim();
