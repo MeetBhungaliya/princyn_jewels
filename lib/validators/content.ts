@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const optionalLink = z
   .union([z.literal(""), z.url(), z.string().startsWith("/")])
+  .optional()
+  .nullable()
   .transform((value) => value || null);
 export const bannerSchema = z.object({
   desktopImage: z.string().startsWith("/").min(1), mobileImage: z.string().startsWith("/").min(1),
