@@ -25,7 +25,7 @@ const IGNORABLE_SQL_ERROR_CODES = new Set([
 
 async function executeMigrationStatement(
   db: PgliteDatabase<any>,
-  statement: string
+  statement: string,
 ): Promise<void> {
   try {
     await db.execute(sql.raw(statement));
@@ -43,7 +43,7 @@ async function executeMigrationStatement(
 
 export async function runMigrations(
   db: PgliteDatabase<any>,
-  migrationsFolder: string
+  migrationsFolder: string,
 ): Promise<void> {
   // Wait for the PGlite WASM to fully initialize before running any queries
   const client = (db as any).$client;
@@ -66,7 +66,7 @@ export async function runMigrations(
 
   // 3. Find which migrations have already been applied
   const rows = await db.execute<{ tag: string }>(
-    sql`SELECT tag FROM "__drizzle_migrations" ORDER BY id`
+    sql`SELECT tag FROM "__drizzle_migrations" ORDER BY id`,
   );
   const applied = new Set(rows.rows.map((r) => r.tag));
 
@@ -88,7 +88,7 @@ export async function runMigrations(
     }
 
     await db.execute(
-      sql`INSERT INTO "__drizzle_migrations" (tag) VALUES (${entry.tag})`
+      sql`INSERT INTO "__drizzle_migrations" (tag) VALUES (${entry.tag})`,
     );
 
     console.log(`[db] Applied migration: ${entry.tag}`);

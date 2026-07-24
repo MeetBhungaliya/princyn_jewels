@@ -9,7 +9,8 @@ declare global {
   var __databaseReady: Promise<void> | undefined;
 }
 
-const databasePath = path.join(process.cwd(), "data", "database");
+const databasePath =
+  process.env.DATABASE_PATH ?? path.join(process.cwd(), "data", "database");
 mkdirSync(databasePath, { recursive: true });
 
 function getDb() {
@@ -31,7 +32,7 @@ export function ensureDatabase(): Promise<void> {
   if (!global.__databaseReady) {
     global.__databaseReady = runMigrations(
       db,
-      path.join(process.cwd(), "drizzle")
+      path.join(process.cwd(), "drizzle"),
     ).catch((err) => {
       // Reset so the next request retries
       global.__databaseReady = undefined;
