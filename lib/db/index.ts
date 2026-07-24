@@ -19,7 +19,13 @@ function getDb() {
   return global.__db;
 }
 
-export const db = getDb();
+export const db = new Proxy({} as ReturnType<typeof drizzle<typeof schema>>, {
+  get(_target, prop, receiver) {
+    const connection = getDb();
+    const value = Reflect.get(connection, prop, receiver);
+    return typeof value === "function" ? value.bind(connection) : value;
+  },
+});
 
 export function ensureDatabase(): Promise<void> {
   if (!global.__databaseReady) {
