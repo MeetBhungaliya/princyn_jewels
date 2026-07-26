@@ -25,13 +25,13 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+
 
 export interface Product {
   id: string;
   title: string;
+  slug: string;
   imagePath: string;
-  link?: string | null;
   subcategory: string;
 }
 
@@ -88,6 +88,8 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   "gift box": Gift,
   accessories: Grid,
 };
+
+import { toTitleCase, getImageUrl } from "@/lib/utils";
 
 export default function CategoryPageTemplate({
   title,
@@ -158,11 +160,11 @@ export default function CategoryPageTemplate({
         {/* Category Hero / Banner */}
         <section className="relative h-[260px] md:h-[360px] w-full flex items-center justify-center overflow-hidden border-b border-[var(--color-border)]">
           <Image
-            src={bannerImage}
-            alt={title}
+            src={getImageUrl(bannerImage)}
+            alt={toTitleCase(title)}
             fill
             priority
-            className="object-cover object-center transform scale-100 filter brightness-45"
+            className="object-cover object-[0_20%] transform scale-100 filter brightness-45"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
           <div className="relative z-10 text-center px-4 max-w-3xl">
@@ -173,7 +175,7 @@ export default function CategoryPageTemplate({
               <ArrowLeft className="w-3 h-3 mr-2" /> Back to Home
             </Link>
             <h1 className="text-3xl md:text-5xl font-light text-white tracking-wider mb-3 uppercase">
-              {title}
+              {toTitleCase(title)}
             </h1>
             <p className="text-[var(--color-primary)] text-xs md:text-sm tracking-widest italic font-serif mb-2">
               {tagline}
@@ -197,14 +199,14 @@ export default function CategoryPageTemplate({
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>{breadcrumbLabel}</BreadcrumbPage>
+                  <BreadcrumbPage>{toTitleCase(breadcrumbLabel)}</BreadcrumbPage>
                 </BreadcrumbItem>
                 {selectedSub && (
                   <>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
                       <BreadcrumbPage className="capitalize">
-                        {selectedSub}
+                        {toTitleCase(selectedSub)}
                       </BreadcrumbPage>
                     </BreadcrumbItem>
                   </>
@@ -264,7 +266,7 @@ export default function CategoryPageTemplate({
 
                         {/* Text */}
                         <h3 className="text-sm font-medium tracking-wide text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] capitalize transition-colors duration-300">
-                          {sub.name}
+                          {toTitleCase(sub.name)}
                         </h3>
                       </Link>
                     );
@@ -343,7 +345,7 @@ export default function CategoryPageTemplate({
                             : "border-[var(--color-border)] bg-[var(--color-surface)] hover:border-[var(--color-primary)]"
                         }`}
                       >
-                        {sub.name}
+                        {toTitleCase(sub.name)}
                       </Link>
                     ))}
                   </div>
@@ -352,7 +354,7 @@ export default function CategoryPageTemplate({
                 {/* Subcategory title */}
                 <div>
                   <h2 className="text-xl md:text-2xl font-light text-[var(--color-foreground)] tracking-wide uppercase mb-1">
-                    {selectedSub}
+                    {toTitleCase(selectedSub)}
                   </h2>
                   <p className="text-[10px] text-[var(--color-foreground-secondary)] uppercase tracking-wider">
                     {filteredProducts.length}{" "}
@@ -363,36 +365,32 @@ export default function CategoryPageTemplate({
 
                 {/* Products Grid */}
                 {filteredProducts.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
                     {filteredProducts.map((product, i) => (
-                      <Card
+                      <Link
                         key={product.id + i}
-                        className="group relative flex flex-col justify-between bg-[var(--color-surface)] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 p-0 border border-[var(--color-border)]"
+                        href={`/product/${product.slug}`}
+                        className="group relative flex flex-col bg-[var(--color-surface)] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-[var(--color-border)] hover:border-[var(--color-primary)]/30"
                       >
-                        {/* Image Container */}
-                        <div className="relative aspect-square w-full overflow-hidden bg-[var(--color-surface-secondary)] border-b border-[var(--color-border)]">
+                        {/* Image */}
+                        <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--color-surface-secondary)]">
                           <Image
-                            src={product.imagePath}
+                            src={getImageUrl(product.imagePath)}
                             alt={product.title}
                             fill
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                            className="object-cover object-center transform scale-100 group-hover:scale-105 transition-transform duration-500 ease-out"
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                            className="object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-out"
                           />
-                          <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                         </div>
 
-                        {/* Info Container */}
-                        <CardContent className="p-5 flex flex-col flex-grow">
-                          <h3 className="text-sm font-medium text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 min-h-[40px]">
+                        {/* Title */}
+                        <div className="px-3 py-3">
+                          <h3 className="text-xs sm:text-sm font-medium text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 leading-snug">
                             {product.title}
                           </h3>
-                        </CardContent>
-
-                        {/* Price and CTA */}
-                        <CardFooter className="mt-auto pt-4 border-t border-[var(--color-border)] flex items-center justify-between p-5 bg-transparent">
-                          {product.link ? <Link href={product.link} className="text-xs uppercase tracking-wider text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] font-semibold transition-colors">View Details</Link> : <span className="text-xs text-[var(--color-foreground-secondary)]">Available in store</span>}
-                        </CardFooter>
-                      </Card>
+                        </div>
+                      </Link>
                     ))}
                   </div>
                 ) : (

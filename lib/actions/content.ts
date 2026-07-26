@@ -4,7 +4,7 @@ import path from "node:path";
 import { requireAdmin } from "@/lib/auth/auth";
 import { bannerRepository, categoryRepository, productRepository, subcategoryRepository } from "@/lib/repositories/content";
 import { bannerSchema, categorySchema, productSchema, subcategorySchema } from "@/lib/validators/content";
-import { deleteLocalImage } from "@/lib/uploads/images";
+import { deleteLocalImage, cleanupStaleImages } from "@/lib/uploads/images";
 import { backupDatabase } from "@/lib/db/backup";
 
 type Result = { ok: true } | { ok: false; error: string };
@@ -15,6 +15,7 @@ const result = async (fn: () => Promise<void>): Promise<Result> => {
     await fn();
     const dbPath = process.env.DATABASE_PATH || path.join(process.cwd(), "var", "www", "storage", "database");
     backupDatabase(dbPath).catch((err) => console.error("Backup failed after write:", err));
+    cleanupStaleImages(30).catch((err) => console.error("Stale cleanup background error:", err));
     return { ok: true };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Unable to save." };
@@ -25,6 +26,7 @@ const refresh = () => {
   revalidatePath("/");
   revalidatePath("/category/[category]", "page");
   revalidatePath("/category/[category]/[subcategory]", "page");
+  revalidatePath("/product/[slug]", "page");
 };
 
 export async function saveBanner(id: string | null, raw: unknown): Promise<Result> {
@@ -60,7 +62,6 @@ export async function saveCategory(id: string | null, raw: unknown): Promise<Res
     const parsed = categorySchema.parse(raw);
     const normalizedName = parsed.name.toLowerCase().trim();
 
-    // Duplicate prevention
     const allCategories = await categoryRepository.all();
     const isDuplicate = allCategories.some(
       (c) => c.name.toLowerCase().trim() === normalizedName && c.id !== id
@@ -100,7 +101,6 @@ export async function saveSubcategory(id: string | null, raw: unknown): Promise<
     const parsed = subcategorySchema.parse(raw);
     const normalizedName = parsed.name.toLowerCase().trim();
 
-    // Duplicate prevention inside same category
     const allSubcategories = await subcategoryRepository.all();
     const isDuplicate = allSubcategories.some(
       (s) =>
@@ -173,7 +173,6 @@ export async function toggleBannerStatus(id: string, active: boolean): Promise<R
       desktopImage: item.desktopImage,
       mobileImage: item.mobileImage,
       title: item.title ?? "",
-      link: item.link ?? "",
       order: item.order,
       active
     });
@@ -229,11 +228,48 @@ export async function toggleProductStatus(id: string, active: boolean): Promise<
       title: item.title,
       slug: item.slug,
       imagePath: item.imagePath,
-      link: item.link ?? "",
+      size: item.size ?? "",
+      metalType: (item.metalType as any) ?? "",
+      karat: (item.karat as any) ?? "",
+      color: item.color ?? "",
+      netWeight: item.netWeight ?? "",
+      diamondWeight: item.diamondWeight ?? "",
+      grossWeight: item.grossWeight ?? "",
       order: item.order,
       active
     });
     refresh();
     revalidatePath("/admin/products");
   });
+}
+
+export async function deleteUploadedImageAction(imagePath: string): Promise<Result> {
+  return result(async () => {
+    if (!imagePath || !imagePath.startsWith("/uploads/")) return;
+
+    const [allBanners, allCategories, allProducts] = await Promise.all([
+      bannerRepository.all(),
+      categoryRepository.all(),
+      productRepository.all(),
+    ]);
+
+    const isUsedInDb =
+      allBanners.some((b) => b.desktopImage === imagePath || b.mobileImage === imagePath) ||
+      allCategories.some((c) => c.imagePath === imagePath) ||
+      allProducts.some((p) => p.product.imagePath === imagePath);
+
+    if (!isUsedInDb) {
+      await deleteLocalImage(imagePath);
+    }
+  });
+}
+
+export async function cleanupStaleImagesAction(): Promise<{ ok: true; scanned: number; deleted: number; freedBytes: number } | { ok: false; error: string }> {
+  try {
+    await requireAdmin();
+    const stats = await cleanupStaleImages(30);
+    return { ok: true, ...stats };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Cleanup failed." };
+  }
 }

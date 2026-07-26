@@ -25,7 +25,7 @@ function Sidebar({ children, className }: React.PropsWithChildren<{ className?: 
 
   return (
     <>
-      <aside className={cn("hidden h-dvh w-64 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col", className)}>
+      <aside className={cn("hidden h-dvh w-64 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col overscroll-contain", className)}>
         {children}
       </aside>
       <Sheet open={context.open} onOpenChange={context.setOpen}>

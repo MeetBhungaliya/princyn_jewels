@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { CategoryRoute } from "@/components/store/CategoryRoute";
 import { categoryRepository } from "@/lib/repositories/content";
+import { toTitleCase } from "@/lib/utils";
+
 export async function generateMetadata({
   params,
 }: {
@@ -9,7 +11,7 @@ export async function generateMetadata({
   const { category: slug, subcategory } = await params;
   const category = await categoryRepository.bySlug(slug);
   if (!category) return {};
-  const decodedSubcategory = decodeURIComponent(subcategory);
+  const decodedSubcategory = toTitleCase(decodeURIComponent(subcategory));
   const imageUrl = category.imagePath || "/logo.png";
   return {
     title: `${decodedSubcategory} | ${category.name}`,

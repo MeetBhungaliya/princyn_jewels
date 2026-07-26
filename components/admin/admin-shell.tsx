@@ -119,12 +119,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           {headerAction ? (
             <Button
               asChild
-              size="default"
-              className="shrink-0 bg-primary font-semibold text-primary-foreground hover:bg-primary/95 shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="shrink-0 h-9.5 rounded-lg bg-primary px-4 text-xs md:text-sm font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 hover:shadow-md transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
             >
               <Link
                 href={headerAction.href}
-                className="flex items-center gap-1.5"
+                className="flex items-center gap-2"
               >
                 <PlusIcon className="size-4 stroke-[2.5]" />
                 <span>{headerAction.label}</span>
@@ -132,7 +131,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             </Button>
           ) : null}
         </header>
-        <div className="min-h-0 flex-1 overflow-y-auto bg-gradient-to-br from-background via-background/98 to-[color-mix(in_srgb,var(--color-primary)_4%,transparent)]">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-gradient-to-br from-background via-background/98 to-[color-mix(in_srgb,var(--color-primary)_4%,transparent)]">
           <main className="mx-auto w-full max-w-7xl p-4 md:p-6">
             {children}
           </main>

@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, unlink, writeFile } from "node:fs/promises";
+import { mkdir, readdir, stat, unlink, writeFile } from "node:fs/promises";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
+import { bannerRepository, categoryRepository, productRepository } from "@/lib/repositories/content";
 
 export const uploadKinds = ["banners", "categories", "products"] as const;
 export type UploadKind = (typeof uploadKinds)[number];
@@ -77,4 +78,65 @@ export async function deleteLocalImage(imagePath?: string | null) {
   if (!isPathInsideRoot(uploadRoot, resolved)) return;
 
   await unlink(resolved).catch(() => undefined);
+}
+
+export async function cleanupStaleImages(maxAgeMinutes = 30): Promise<{ scanned: number; deleted: number; freedBytes: number }> {
+  const uploadRoot = getUploadRoot();
+  let scanned = 0;
+  let deleted = 0;
+  let freedBytes = 0;
+
+  try {
+    const [allBanners, allCategories, allProducts] = await Promise.all([
+      bannerRepository.all(),
+      categoryRepository.all(),
+      productRepository.all(),
+    ]);
+
+    const activePaths = new Set<string>();
+    for (const b of allBanners) {
+      if (b.desktopImage) activePaths.add(b.desktopImage);
+      if (b.mobileImage) activePaths.add(b.mobileImage);
+    }
+    for (const c of allCategories) {
+      if (c.imagePath) activePaths.add(c.imagePath);
+    }
+    for (const p of allProducts) {
+      if (p.product.imagePath) activePaths.add(p.product.imagePath);
+    }
+
+    const now = Date.now();
+    const maxAgeMs = maxAgeMinutes * 60 * 1000;
+
+    for (const kind of uploadKinds) {
+      const dir = path.join(uploadRoot, kind);
+      if (!existsSync(dir)) continue;
+
+      const files = await readdir(dir, { withFileTypes: true }).catch(() => []);
+      for (const file of files) {
+        if (!file.isFile()) continue;
+
+        scanned++;
+        const imageRelPath = `/uploads/${kind}/${file.name}`;
+
+        if (!activePaths.has(imageRelPath)) {
+          const fullPath = path.join(dir, file.name);
+          const fileStat = await stat(fullPath).catch(() => null);
+
+          if (fileStat) {
+            const age = now - fileStat.mtimeMs;
+            if (age > maxAgeMs) {
+              freedBytes += fileStat.size;
+              await unlink(fullPath).catch(() => undefined);
+              deleted++;
+            }
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Stale image cleanup error:", err);
+  }
+
+  return { scanned, deleted, freedBytes };
 }

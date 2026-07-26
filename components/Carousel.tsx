@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import Autoplay from "embla-carousel-autoplay";
-import { cn } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 
 import {
   Carousel as C,
@@ -64,7 +64,7 @@ export function Carousel({ banners }: { banners: Banner[] }) {
         onMouseLeave={autoplayPlugin.reset}
       >
         <CarouselContent className="ml-0">
-          {banners.map((banner) => {
+          {banners.map((banner, index) => {
             const mobileSrc = banner.mobileImageUrl ?? banner.imageUrl;
             const desktopSrc = banner.desktopImageUrl ?? banner.imageUrl;
 
@@ -74,22 +74,24 @@ export function Carousel({ banners }: { banners: Banner[] }) {
                   <div className="relative aspect-[2/2] md:aspect-[21/9] lg:aspect-[24/10] w-full">
                     {mobileSrc ? (
                       <Image
-                        src={mobileSrc}
+                        src={getImageUrl(mobileSrc)}
                         alt={banner.altText}
                         fill
-                        priority
+                        priority={index === 0}
+                        loading={index === 0 ? "eager" : "lazy"}
                         className="block object-cover object-center md:hidden"
-                        sizes={BANNER_IMAGE_SIZES}
+                        sizes="100vw"
                       />
                     ) : null}
                     {desktopSrc ? (
                       <Image
-                        src={desktopSrc}
+                        src={getImageUrl(desktopSrc)}
                         alt={banner.altText}
                         fill
-                        priority
+                        priority={index === 0}
+                        loading={index === 0 ? "eager" : "lazy"}
                         className="hidden object-cover object-center md:block"
-                        sizes={BANNER_IMAGE_SIZES}
+                        sizes="100vw"
                       />
                     ) : null}
                     <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />

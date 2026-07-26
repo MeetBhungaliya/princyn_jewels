@@ -7,6 +7,15 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Admin | Princyn Jewels",
+    template: "%s | Admin | Princyn Jewels",
+  },
+};
+
 export default function AdminRootLayout({
   children,
 }: {

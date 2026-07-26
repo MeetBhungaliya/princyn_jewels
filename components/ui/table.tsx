@@ -6,7 +6,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
     <div className="w-full overflow-hidden rounded-xl border bg-card">
       <div className="max-h-[60dvh] overflow-auto">
-        <table data-slot="table" className={cn("w-full caption-bottom text-sm", className)} {...props} />
+        <table data-slot="table" className={cn("w-full caption-bottom text-sm border-separate border-spacing-0", className)} {...props} />
       </div>
     </div>
   );
@@ -17,7 +17,7 @@ function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
 }
 
 function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
-  return <tbody data-slot="table-body" className={cn("[&_tr:last-child]:border-0", className)} {...props} />;
+  return <tbody data-slot="table-body" className={cn("[&_tr:last-child_td]:border-b-0", className)} {...props} />;
 }
 
 function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
@@ -29,7 +29,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
 }
 
 function TableCell({ className, ...props }: React.ComponentProps<"td">) {
-  return <td data-slot="table-cell" className={cn("p-4 align-middle", className)} {...props} />;
+  return <td data-slot="table-cell" className={cn("p-4 align-middle border-b border-border", className)} {...props} />;
 }
 
 export { Table, TableBody, TableCell, TableHead, TableHeader, TableRow };

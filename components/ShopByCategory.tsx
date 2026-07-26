@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getImageUrl } from "@/lib/utils";
 
 export interface CategoryItem {
   id: string;
@@ -36,7 +37,7 @@ export function ShopByCategory({ categories }: { categories: CategoryItem[] }) {
               {/* Image Container */}
               <div className="relative w-full h-full bg-black/5">
                 <Image
-                  src={category.imageUrl}
+                  src={getImageUrl(category.imageUrl)}
                   alt={`${category.name} Category`}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 50vw"

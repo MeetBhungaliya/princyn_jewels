@@ -17,7 +17,7 @@
       "price": "$3,450",
       "rating": 4.8,
       "reviews": 12,
-      "image": "/banner2.png",
+      "image": "/promo/banner2.png",
       "tag": "New",
       "metal": "Platinum",
       "subcategory": "bracelet"
@@ -28,7 +28,7 @@
       "price": "$1,899",
       "rating": 4.7,
       "reviews": 18,
-      "image": "/banner1.jpeg",
+      "image": "/promo/banner1.png",
       "tag": "Premium",
       "metal": "White Gold & Diamonds",
       "subcategory": "ring"

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { getImageUrl } from "@/lib/utils";
 
 interface PromoItem {
   id: string;
@@ -43,7 +44,7 @@ export function PromoSection() {
               {/* Aspect Ratio container for images */}
               <div className="relative aspect-[2/1] md:aspect-[4/3] w-full overflow-hidden bg-[var(--color-background)]">
                 <Image
-                  src={item.imageUrl}
+                  src={getImageUrl(item.imageUrl)}
                   alt={item.altText}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"

@@ -1,17 +1,22 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, toTitleCase, getImageUrl } from "@/lib/utils";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
+  FolderPlusIcon,
   ImageIcon,
+  Loader2Icon,
+  PlusIcon,
   SearchIcon,
-  SparklesIcon,
-  Trash2Icon
+  SearchXIcon,
+  Trash2Icon,
+  XIcon
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 import {
   AlertDialog,
@@ -56,7 +61,6 @@ type BannerRow = {
   desktopImage: string;
   mobileImage: string;
   title: string;
-  link: string;
   order: number;
   active: boolean;
 };
@@ -78,7 +82,6 @@ type ProductRow = {
   title: string;
   slug: string;
   imagePath: string;
-  link: string;
   order: number;
   active: boolean;
   categoryName: string;
@@ -97,6 +100,7 @@ export function ContentList({
   section,
   title,
   description,
+  addHref,
   rows,
   emptyTitle,
   emptyDescription,
@@ -114,6 +118,9 @@ export function ContentList({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("all");
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(inputValue);
@@ -121,49 +128,86 @@ export function ContentList({
     return () => clearTimeout(timer);
   }, [inputValue]);
 
-  // Filter rows based on search with client-side memoization caching
+  // Extract category options for subcategories
+  const categoriesOptions = useMemo(() => {
+    if (section !== "subcategory") return [];
+    const map = new Map<string, string>();
+    (rows as SubcategoryRow[]).forEach((r) => {
+      if (r.categoryId && r.categoryName) {
+        map.set(r.categoryId, r.categoryName);
+      }
+    });
+    return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
+  }, [rows, section]);
+
+  // Extract category options for products
+  const categoryOptions = useMemo(() => {
+    if (section !== "product") return [];
+    const map = new Map<string, string>();
+    (rows as ProductRow[]).forEach((r) => {
+      if (r.categoryId && r.categoryName) {
+        map.set(r.categoryId, r.categoryName);
+      }
+    });
+    return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
+  }, [rows, section]);
+
+  // Extract subcategory options for products (filtered by selected category)
+  const subcategoryOptions = useMemo(() => {
+    if (section !== "product") return [];
+    const set = new Set<string>();
+    (rows as ProductRow[]).forEach((r) => {
+      if (r.subcategory && (selectedCategory === "all" || r.categoryId === selectedCategory)) {
+        set.add(r.subcategory);
+      }
+    });
+    return Array.from(set).map((name) => ({ id: name, name }));
+  }, [rows, section, selectedCategory]);
+
+  // Filter rows based on selectors and main column search query
   const filteredRows = useMemo(() => {
-    if (!debouncedQuery) return rows;
+    let result = rows;
+
+    // Apply Selectors Filter
+    if (section === "subcategory" && selectedCategory !== "all") {
+      result = (result as SubcategoryRow[]).filter((r) => r.categoryId === selectedCategory);
+    } else if (section === "product") {
+      if (selectedCategory !== "all") {
+        result = (result as ProductRow[]).filter((r) => r.categoryId === selectedCategory);
+      }
+      if (selectedSubcategory !== "all") {
+        result = (result as ProductRow[]).filter((r) => r.subcategory === selectedSubcategory);
+      }
+    }
+
+    if (!debouncedQuery) return result;
     const query = debouncedQuery.toLowerCase();
 
-    return rows.filter((row) => {
+    return result.filter((row) => {
       if (section === "banner") {
         const r = row as BannerRow;
-        return (
-          (r.title?.toLowerCase() || "").includes(query) ||
-          (r.link?.toLowerCase() || "").includes(query)
-        );
+        return (r.title?.toLowerCase() || "").includes(query);
       }
       if (section === "category") {
         const r = row as CategoryRow;
-        return (
-          r.name.toLowerCase().includes(query) ||
-          r.tagline.toLowerCase().includes(query)
-        );
+        return r.name.toLowerCase().includes(query);
       }
       if (section === "subcategory") {
         const r = row as SubcategoryRow;
-        return (
-          r.name.toLowerCase().includes(query) ||
-          r.categoryName.toLowerCase().includes(query)
-        );
+        return r.name.toLowerCase().includes(query);
       }
       if (section === "product") {
         const r = row as ProductRow;
-        return (
-          r.title.toLowerCase().includes(query) ||
-          r.categoryName.toLowerCase().includes(query) ||
-          r.subcategory.toLowerCase().includes(query)
-        );
+        return r.title.toLowerCase().includes(query);
       }
       return true;
     });
-  }, [rows, debouncedQuery, section]);
+  }, [rows, debouncedQuery, section, selectedCategory, selectedSubcategory]);
 
-  // Reset page to 1 when searching
+  // Reset page to 1 when searching or filtering
   useEffect(() => {
     setCurrentPage(1);
-  }, [debouncedQuery]);
+  }, [debouncedQuery, selectedCategory, selectedSubcategory]);
 
   const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
   const paginatedRows = filteredRows.slice(
@@ -181,30 +225,104 @@ export function ContentList({
       : section === "category"
         ? "Search by category name..."
         : section === "subcategory"
-          ? "Search by subcategory or category name..."
-          : "Search by product title, category, or subcategory...";
+          ? "Search by subcategory name..."
+          : "Search by product title...";
 
   return (
     <div className="space-y-6">
-
-      {/* Search Input */}
+      {/* Search and Dropdown Filters */}
       {rows.length > 0 && (
-        <div className="relative max-w-md shadow-xs rounded-lg">
-          <SearchIcon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/80" />
-          <Input
-            placeholder={searchPlaceholder}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="pl-10 h-11 w-full rounded-lg bg-background border-border text-sm md:text-base focus-visible:ring-primary/20"
-          />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="relative w-full sm:w-72 md:w-80 shadow-xs rounded-lg">
+            <SearchIcon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/80" />
+            <Input
+              placeholder={searchPlaceholder}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              className="pl-10 pr-12 h-11 w-full rounded-lg bg-background border-border text-sm md:text-base"
+            />
+            <div className="absolute h-full aspect-square group right-0 top-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-auto">
+              {inputValue !== debouncedQuery ? (
+                <Loader2Icon className="size-4 animate-spin text-muted-foreground" />
+              ) : inputValue.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInputValue("");
+                    setDebouncedQuery("");
+                  }}
+                  className="h-full border-1 aspect-square flex items-center justify-center text-muted-foreground/70 group-hover:text-foreground transition-colors rounded-r-lg group-hover:bg-muted focus:outline-hidden border-l-0 border-border group-hover:border-border"
+                  title="Clear search"
+                >
+                  <XIcon className="size-4" />
+                </button>
+              ) : null}
+            </div>
+          </div>
+
+          {/* Category Filter for Subcategory */}
+          {section === "subcategory" && (
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="h-11 w-full sm:w-[200px] rounded-lg bg-background border-border text-sm font-medium">
+                <SelectValue placeholder="All Categories" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categoriesOptions.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {toTitleCase(c.name)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
+          {/* Category & Subcategory Filters for Products */}
+          {section === "product" && (
+            <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+              <Select
+                value={selectedCategory}
+                onValueChange={(value: string) => {
+                  setSelectedCategory(value);
+                  setSelectedSubcategory("all");
+                }}
+              >
+                <SelectTrigger className="h-11 w-full sm:w-[180px] rounded-lg bg-background border-border text-sm font-medium">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categoryOptions.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {toTitleCase(c.name)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedSubcategory} onValueChange={setSelectedSubcategory}>
+                <SelectTrigger className="h-11 w-full sm:w-[180px] rounded-lg bg-background border-border text-sm font-medium">
+                  <SelectValue placeholder="All Subcategories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Subcategories</SelectItem>
+                  {subcategoryOptions.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      {toTitleCase(s.name)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
       )}
 
       {filteredRows.length ? (
-        <div className="space-y-4">
+        <div className="flex flex-col justify-between min-h-[580px] space-y-4">
           <div className="overflow-x-auto md:overflow-x-visible rounded-lg shadow-xs">
             <Table className="min-w-190">
-              <TableHeader className="sticky top-0 z-10 bg-background border-b">
+              <TableHeader className="sticky top-0 z-10 bg-background border-b border-border [&_th]:border-b [&_th]:border-border">
                     <TableRow className="border-b bg-muted/20 hover:bg-muted/20">
                       {section === "banner" && (
                         <>
@@ -256,7 +374,7 @@ export function ContentList({
                             </TableCell>
                             <TableCell className="px-6 py-4.5 text-sm md:text-base font-semibold">
                               <Link href={`/admin/banner/${banner.id}`} className="text-primary underline decoration-primary/30 hover:decoration-primary font-semibold transition-all underline-offset-4">
-                                <HighlightText text={banner.title || "Untitled banner"} query={debouncedQuery} />
+                                <HighlightText text={banner.title || "Untitled Banner"} query={debouncedQuery} />
                               </Link>
                             </TableCell>
                             <TableCell className="px-6 py-4.5">
@@ -358,7 +476,7 @@ export function ContentList({
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-2 px-1">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-2 px-1 border-t border-border pt-4">
               <p className="text-sm text-muted-foreground">
                 Showing{" "}
                 <span className="font-semibold text-foreground">
@@ -405,30 +523,51 @@ export function ContentList({
           )}
         </div>
       ) : (
-        <Card className="border-dashed border-2 border-muted-foreground/20">
-          <CardContent className="flex flex-col items-center justify-center gap-4 px-6 py-20 text-center">
-            <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <SparklesIcon className="size-8" />
-            </div>
-            <div className="space-y-1.5">
-              <h2 className="text-xl font-bold text-foreground">
-                {inputValue ? "No results found" : emptyTitle}
-              </h2>
-              <p className="max-w-md text-sm md:text-base text-muted-foreground">
-                {inputValue
-                  ? `We couldn't find any match for "${inputValue}". Please check your spelling or try another term.`
-                  : emptyDescription}
-              </p>
-              {inputValue && (
-                <Button
-                  variant="link"
-                  onClick={() => setInputValue("")}
-                  className="mt-2 text-primary font-semibold"
-                >
-                  Clear search
-                </Button>
+        <Card className="border-dashed border-2 border-muted-foreground/20 rounded-xl shadow-2xs bg-background">
+          <CardContent className="flex flex-col items-center justify-center gap-4 px-6 py-16 text-center">
+            <div className="flex size-14 items-center justify-center rounded-full bg-muted text-muted-foreground/80 ring-8 ring-muted/30">
+              {rows.length > 0 ? (
+                <SearchXIcon className="size-7 stroke-[1.75]" />
+              ) : (
+                <FolderPlusIcon className="size-7 stroke-[1.75]" />
               )}
             </div>
+            <div className="space-y-1.5 max-w-md">
+              <h2 className="text-lg md:text-xl font-bold text-foreground tracking-tight">
+                {rows.length > 0 ? "No matching results found" : emptyTitle}
+              </h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {rows.length > 0
+                  ? `We couldn't find any items matching your current filters or search term "${inputValue || debouncedQuery}".`
+                  : emptyDescription}
+              </p>
+            </div>
+            {rows.length > 0 ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setInputValue("");
+                  setDebouncedQuery("");
+                  setSelectedCategory("all");
+                  setSelectedSubcategory("all");
+                }}
+                className="mt-2 h-9.5 px-4 rounded-lg font-semibold border-border hover:bg-muted transition-all gap-2"
+              >
+                <XIcon className="size-4" />
+                <span>Clear Filters & Search</span>
+              </Button>
+            ) : (
+              <Button
+                asChild
+                className="mt-2 h-9.5 px-5 rounded-lg bg-primary text-primary-foreground font-semibold shadow-xs hover:bg-primary/95 transition-all gap-2"
+              >
+                <Link href={addHref}>
+                  <PlusIcon className="size-4" />
+                  <span>Add New Item</span>
+                </Link>
+              </Button>
+            )}
           </CardContent>
         </Card>
       )}
@@ -558,7 +697,7 @@ export function FallbackImage({
 
   return (
     <img
-      src={src}
+      src={getImageUrl(src)}
       alt={alt}
       onError={() => setError(true)}
       className={className}
@@ -586,10 +725,4 @@ export function HighlightText({ text, query }: { text: string; query: string }) 
   );
 }
 
-export function toTitleCase(str: string): string {
-  if (!str) return "";
-  return str
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
-}
+

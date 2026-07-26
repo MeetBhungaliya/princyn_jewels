@@ -32,6 +32,7 @@ export const subcategoryRepository = {
 export const productRepository = {
   async all() { await ready(); return db.select({ product: products, category: categories }).from(products).innerJoin(categories, eq(products.categoryId, categories.id)).orderBy(asc(categories.order), asc(products.order)); },
   async byId(id: string) { await ready(); return (await db.select().from(products).where(eq(products.id, id)))[0]; },
+  async bySlug(slug: string) { await ready(); return (await db.select().from(products).where(and(eq(products.slug, slug), eq(products.active, true))))[0]; },
   async forCategory(categoryId: string, subcategory?: string) { await ready(); const filter = subcategory ? and(eq(products.categoryId, categoryId), eq(products.subcategorySlug, subcategory), eq(products.active, true)) : and(eq(products.categoryId, categoryId), eq(products.active, true)); return db.select().from(products).where(filter).orderBy(asc(products.order)); },
   async subcategories(categoryId: string) { await ready(); return db.selectDistinct({ name: products.subcategory, slug: products.subcategorySlug }).from(products).where(and(eq(products.categoryId, categoryId), eq(products.active, true))).orderBy(asc(products.subcategory)); },
   async create(data: ProductInput) { await ready(); return (await db.insert(products).values(data).returning())[0]; },

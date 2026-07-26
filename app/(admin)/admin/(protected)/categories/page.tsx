@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import { ContentList } from "@/components/admin/content-list";
 import { categoryRepository } from "@/lib/repositories/content";
+
+export const metadata: Metadata = {
+  title: "Categories",
+};
 
 export default async function CategoriesPage() {
   const rows = await categoryRepository.all();

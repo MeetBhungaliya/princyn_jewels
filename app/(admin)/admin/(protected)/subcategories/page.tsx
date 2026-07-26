@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import { ContentList } from "@/components/admin/content-list";
 import { categoryRepository, subcategoryRepository } from "@/lib/repositories/content";
+
+export const metadata: Metadata = {
+  title: "Subcategories",
+};
 
 export default async function SubcategoriesPage() {
   const [items, categories] = await Promise.all([subcategoryRepository.all(), categoryRepository.all()]);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
@@ -11,6 +11,9 @@ import { Navigation } from "@/components/header/Navigation";
 import { MobileSidebar } from "@/components/header/MobileSidebar";
 
 const GOLD = "var(--color-gold)";
+
+const SCROLL_DOWN_THRESHOLD = 100;
+const SCROLL_UP_THRESHOLD = 10;
 
 /* ─────────────────────────────────────────────
    Mobile Hamburger Button
@@ -49,18 +52,34 @@ import { ThemeSwitcher } from "@/components/header/ThemeSwitcher";
 export function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const isScrolledRef = useRef(false);
+  const rafId = useRef<number>(0);
+
+  const handleScroll = useCallback(() => {
+    if (rafId.current) cancelAnimationFrame(rafId.current);
+
+    rafId.current = requestAnimationFrame(() => {
+      const y = window.scrollY;
+
+      if (!isScrolledRef.current && y > SCROLL_DOWN_THRESHOLD) {
+        isScrolledRef.current = true;
+        setIsScrolled(true);
+      } else if (isScrolledRef.current && y < SCROLL_UP_THRESHOLD) {
+        isScrolledRef.current = false;
+        setIsScrolled(false);
+      }
+    });
+  }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
-    };
-
     window.addEventListener("scroll", handleScroll, { passive: true });
-    // Check initial scroll position
     handleScroll();
-    
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId.current) cancelAnimationFrame(rafId.current);
+    };
+  }, [handleScroll]);
 
   return (
     <>
