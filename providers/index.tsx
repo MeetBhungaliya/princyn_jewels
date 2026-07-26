@@ -60,7 +60,24 @@ export function ThemeProvider({
       setResolvedTheme(initialResolvedTheme);
       applyTheme(initialResolvedTheme);
     });
-    return () => cancelAnimationFrame(frame);
+
+    const handleWheel = (e: WheelEvent) => {
+      const activeElement = document.activeElement;
+      if (
+        activeElement &&
+        activeElement.tagName === "INPUT" &&
+        (activeElement as HTMLInputElement).type === "number"
+      ) {
+        (activeElement as HTMLInputElement).blur();
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("wheel", handleWheel);
+    };
   }, []);
 
   const setTheme = (value: ThemeMode) => {
