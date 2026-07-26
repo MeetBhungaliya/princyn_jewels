@@ -6,10 +6,10 @@ loadEnvConfig(process.cwd());
 async function migrate() {
   await ensureDatabase();
   console.log("Database ready.");
-  process.exitCode = 1;
+  process.exit(0);
 }
 
 migrate().catch((error) => {
   console.error(error);
-  process.exitCode = 1;
+  process.exit(1);
 });
