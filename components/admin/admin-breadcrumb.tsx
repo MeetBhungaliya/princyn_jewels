@@ -24,7 +24,7 @@ export function AdminBreadcrumb() {
       <BreadcrumbList className="flex-wrap">
         {segments.map((segment, index) => {
           const isLast = index === segments.length - 1;
-          const href = "/" + segments.slice(0, index + 1).join("/");
+          const href = "/admin/" + segments.slice(0, index + 1).join("/");
           const title = segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
 
           return (

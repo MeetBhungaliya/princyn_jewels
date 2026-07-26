@@ -25,16 +25,16 @@ function Sidebar({ children, className }: React.PropsWithChildren<{ className?: 
 
   return (
     <>
-      <aside className={cn("hidden h-dvh w-72 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col", className)}>
+      <aside className={cn("hidden h-dvh w-64 shrink-0 border-r bg-sidebar text-sidebar-foreground md:flex md:flex-col", className)}>
         {children}
       </aside>
       <Sheet open={context.open} onOpenChange={context.setOpen}>
-        <SheetContent side="left" className="w-80 border-r p-0" showCloseButton>
+        <SheetContent side="left" className="w-72 border-r p-0" showCloseButton>
           <div className="flex h-full flex-col">{children}</div>
         </SheetContent>
       </Sheet>
     </>
-  )
+  );
 }
 
 function SidebarTrigger({ className }: { className?: string }) {

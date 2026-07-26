@@ -6,8 +6,6 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/header";
 import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
 
-export const dynamic = "force-dynamic";
-
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -15,9 +13,24 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Princyn Jewels",
+  title: {
+    default: "Princyn Jewels",
+    template: "%s | Princyn Jewels",
+  },
   description:
     "Princyn Jewels is a jewelry store that offers a wide range of high-quality jewelry products, including rings, necklaces, bracelets, and earrings. Our mission is to provide our customers with beautiful and unique jewelry pieces that they can cherish for a lifetime.",
+  openGraph: {
+    title: "Princyn Jewels",
+    description: "Princyn Jewels is a jewelry store that offers a wide range of high-quality jewelry products, including rings, necklaces, bracelets, and earrings.",
+    images: [{ url: "/logo.png", width: 512, height: 512, alt: "Princyn Jewels Logo" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Princyn Jewels",
+    description: "Princyn Jewels is a jewelry store that offers a wide range of high-quality jewelry products, including rings, necklaces, bracelets, and earrings.",
+    images: ["/logo.png"],
+  },
 };
 
 export default function RootLayout({

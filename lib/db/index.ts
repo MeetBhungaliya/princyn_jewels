@@ -1,17 +1,27 @@
 import path from "node:path";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, existsSync } from "node:fs";
 import { drizzle } from "drizzle-orm/pglite";
 import * as schema from "@/lib/db/schema";
 import { runMigrations } from "@/lib/db/migrator";
+import { restoreLatestBackup } from "./backup";
 
 declare global {
   var __db: ReturnType<typeof drizzle<typeof schema>> | undefined;
   var __databaseReady: Promise<void> | undefined;
 }
 
-const databasePath =
-  process.env.DATABASE_PATH ?? path.join(process.cwd(), "data", "database");
-mkdirSync(databasePath, { recursive: true });
+let databasePath = process.env.DATABASE_PATH || path.join(process.cwd(), "var", "www", "storage", "database");
+
+try {
+  if (!existsSync(databasePath)) {
+    mkdirSync(databasePath, { recursive: true });
+  }
+} catch (error) {
+  databasePath = path.join(process.cwd(), "var", "www", "storage", "database");
+  if (!existsSync(databasePath)) {
+    mkdirSync(databasePath, { recursive: true });
+  }
+}
 
 function getDb() {
   if (!global.__db) {
@@ -33,8 +43,18 @@ export function ensureDatabase(): Promise<void> {
     global.__databaseReady = runMigrations(
       db,
       path.join(process.cwd(), "drizzle"),
-    ).catch((err) => {
-      // Reset so the next request retries
+    ).catch(async (err) => {
+      console.error("[db] Migration failed, attempting restore:", err);
+      const restored = await restoreLatestBackup(databasePath);
+      if (restored) {
+        try {
+          await runMigrations(db, path.join(process.cwd(), "drizzle"));
+          return;
+        } catch (retryErr) {
+          global.__databaseReady = undefined;
+          throw retryErr;
+        }
+      }
       global.__databaseReady = undefined;
       throw err;
     });

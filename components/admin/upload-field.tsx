@@ -23,12 +23,16 @@ export function UploadField({
   value,
   onChange,
   className,
+  validationError,
+  required,
 }: {
   kind: UploadKind;
   label?: string;
   value: string;
   onChange: (path: string) => void;
   className?: string;
+  validationError?: string;
+  required?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [pending, setPending] = useState(false);
@@ -36,6 +40,22 @@ export function UploadField({
 
   const upload = async (file?: File | null) => {
     if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
+    const MAX_BYTES = 5 * 1024 * 1024;
+
+    if (!allowedTypes.includes(file.type)) {
+      setError("Upload a JPG, JPEG, PNG, WebP, GIF, or SVG image.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+
+    if (file.size > MAX_BYTES) {
+      setError("File is too large. Choose an image up to 5 MB.");
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
+
     setPending(true);
     setError("");
     try {
@@ -55,11 +75,14 @@ export function UploadField({
   };
 
   return (
-    <Card className={cn("border-dashed bg-linear-to-br from-background to-muted/30", className)}>
+    <Card className={cn("border-dashed bg-linear-to-br from-background to-muted/30 transition-colors duration-200", validationError && "border-destructive/80 bg-destructive/5 dark:bg-destructive/10", className)}>
       <CardHeader className="space-y-1">
         <CardTitle className="flex items-center gap-2 text-base">
           <FileImageIcon className="size-4 text-primary" />
-          {label ?? titles[kind]}
+          <span className="flex items-center gap-0.5">
+            {label ?? titles[kind]}
+            {required && <span className="text-destructive font-bold">*</span>}
+          </span>
         </CardTitle>
         <CardDescription>Upload a JPG, PNG, WebP, or GIF up to 5 MB.</CardDescription>
       </CardHeader>
@@ -97,6 +120,7 @@ export function UploadField({
           </div>
         )}
         {error && <p className="text-sm text-destructive">{error}</p>}
+        {validationError && <p className="text-sm text-destructive font-medium">{validationError}</p>}
       </CardContent>
     </Card>
   );

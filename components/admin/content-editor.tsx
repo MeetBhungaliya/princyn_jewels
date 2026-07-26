@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import * as React from "react";
 import { useEffect, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,12 +66,11 @@ function BannerEditor({
   });
   return <EditorShell title={initial ? "Edit banner" : "Add banner"} description="Manage carousel cards with desktop/mobile art and optional links." badge="Banner" onSubmit={form.handleSubmit(submit)} pending={pending} backHref={redirectTo} router={router}>
     <div className="grid gap-4 lg:grid-cols-2">
-      <UploadField kind="banners" label="Desktop image" value={desktopImage ?? ""} onChange={(value) => form.setValue("desktopImage", value)} />
-      <UploadField kind="banners" label="Mobile image" value={mobileImage ?? ""} onChange={(value) => form.setValue("mobileImage", value)} />
-      <Field label="Title"><Input {...form.register("title")} placeholder="Optional heading" /></Field>
-      <Field label="Link"><Input {...form.register("link")} placeholder="https://example.com or /category/men" /></Field>
-      <Field label="Order"><Input type="number" {...form.register("order", { valueAsNumber: true })} /></Field>
-      <Field label="Status"><div className="flex h-10 items-center rounded-lg border px-3"><label className="flex items-center gap-2 text-sm"><input type="checkbox" {...form.register("active")} /> Active</label></div></Field>
+      <UploadField kind="banners" label="Desktop image" value={desktopImage ?? ""} onChange={(value) => form.setValue("desktopImage", value)} validationError={form.formState.errors.desktopImage?.message} required />
+      <UploadField kind="banners" label="Mobile image" value={mobileImage ?? ""} onChange={(value) => form.setValue("mobileImage", value)} validationError={form.formState.errors.mobileImage?.message} required />
+      <Field label="Title" error={form.formState.errors.title?.message}><Input {...form.register("title")} placeholder="Optional heading" /></Field>
+      <Field label="Link" error={form.formState.errors.link?.message}><Input {...form.register("link")} placeholder="https://example.com or /category/men" /></Field>
+      <Field label="Order" error={form.formState.errors.order?.message} required><Input type="number" {...form.register("order", { valueAsNumber: true })} /></Field>
     </div>
   </EditorShell>;
 }
@@ -85,6 +85,13 @@ function CategoryEditor({
   const form = useForm<CategoryForm, unknown, CategoryInput>({ resolver: zodResolver(categorySchema), defaultValues: categoryDefaults(initial) });
   useEffect(() => form.reset(categoryDefaults(initial)), [initial, form]);
   const categoryImage = useWatch({ control: form.control, name: "imagePath" });
+  const nameValue = useWatch({ control: form.control, name: "name" });
+  useEffect(() => {
+    if (nameValue) {
+      form.setValue("slug", slugify(nameValue), { shouldValidate: true });
+    }
+  }, [nameValue, form]);
+
   const submit = (data: CategoryInput) => start(async () => {
     const result = await saveCategory(initial?.id ?? null, data);
     if (result.ok) {
@@ -95,13 +102,11 @@ function CategoryEditor({
   });
   return <EditorShell title={initial ? "Edit category" : "Add category"} description="Set the public category card, hero image, and browse copy." badge="Category" onSubmit={form.handleSubmit(submit)} pending={pending} backHref={redirectTo} router={router}>
     <div className="grid gap-4 lg:grid-cols-2">
-      <Field label="Name"><Input {...form.register("name")} /></Field>
-      <Field label="Slug"><Input {...form.register("slug")} /></Field>
-      <Field label="Tagline"><Input {...form.register("tagline")} /></Field>
-      <Field label="Order"><Input type="number" {...form.register("order", { valueAsNumber: true })} /></Field>
-      <Field label="Description" className="lg:col-span-2"><Textarea className="min-h-32" {...form.register("description")} /></Field>
-      <UploadField kind="categories" label="Hero / card image" value={categoryImage ?? ""} onChange={(value) => form.setValue("imagePath", value)} className="lg:col-span-2" />
-      <Field label="Status"><div className="flex h-10 items-center rounded-lg border px-3"><label className="flex items-center gap-2 text-sm"><input type="checkbox" {...form.register("active")} /> Active</label></div></Field>
+      <Field label="Name" error={form.formState.errors.name?.message} required><Input {...form.register("name")} /></Field>
+      <Field label="Tagline" error={form.formState.errors.tagline?.message} required><Input {...form.register("tagline")} /></Field>
+      <Field label="Order" error={form.formState.errors.order?.message} required><Input type="number" {...form.register("order", { valueAsNumber: true })} /></Field>
+      <Field label="Description" className="lg:col-span-2" error={form.formState.errors.description?.message} required><Textarea className="min-h-32" {...form.register("description")} /></Field>
+      <UploadField kind="categories" label="Hero / card image" value={categoryImage ?? ""} onChange={(value) => form.setValue("imagePath", value)} className="lg:col-span-2" validationError={form.formState.errors.imagePath?.message} required />
     </div>
   </EditorShell>;
 }
@@ -120,6 +125,13 @@ function ProductEditor({
   const productImage = useWatch({ control: form.control, name: "imagePath" });
   const categoryId = useWatch({ control: form.control, name: "categoryId" });
   const subcategoryId = useWatch({ control: form.control, name: "subcategoryId" });
+  const titleValue = useWatch({ control: form.control, name: "title" });
+  useEffect(() => {
+    if (titleValue) {
+      form.setValue("slug", slugify(titleValue), { shouldValidate: true });
+    }
+  }, [titleValue, form]);
+
   const categorySubcategories = subcategories.filter((subcategory) => subcategory.categoryId === categoryId);
   const submit = (data: ProductInput) => start(async () => {
     const result = await saveProduct(initial?.id ?? null, data);
@@ -131,24 +143,22 @@ function ProductEditor({
   });
   return <EditorShell title={initial ? "Edit product" : "Add product"} description="" badge="Product" onSubmit={form.handleSubmit(submit)} pending={pending} backHref={redirectTo} router={router}>
     <div className="grid gap-4 lg:grid-cols-2">
-      <Field label="Category">
+      <Field label="Category" error={form.formState.errors.categoryId?.message} required>
         <Select value={categoryId ?? ""} onValueChange={(value) => { form.setValue("categoryId", value); form.setValue("subcategoryId", ""); form.setValue("subcategory", ""); form.setValue("subcategorySlug", ""); }}>
           <SelectTrigger><SelectValue placeholder="Choose category" /></SelectTrigger>
           <SelectContent>{categories.map((category) => <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>)}</SelectContent>
         </Select>
       </Field>
-      <Field label="Subcategory">
+      <Field label="Subcategory" error={form.formState.errors.subcategoryId?.message}>
         <Select value={subcategoryId ?? ""} onValueChange={(value) => { const subcategory = subcategories.find((item) => item.id === value); form.setValue("subcategoryId", value); form.setValue("subcategory", subcategory?.name ?? ""); form.setValue("subcategorySlug", subcategory?.slug ?? ""); }} disabled={!categoryId}>
           <SelectTrigger><SelectValue placeholder={categoryId ? "Choose subcategory" : "Choose category first"} /></SelectTrigger>
           <SelectContent>{categorySubcategories.map((subcategory) => <SelectItem key={subcategory.id} value={subcategory.id}>{subcategory.name}</SelectItem>)}</SelectContent>
         </Select>
       </Field>
-      <Field label="Title"><Input {...form.register("title")} /></Field>
-      <Field label="Slug"><Input {...form.register("slug")} /></Field>
-      <Field label="Optional link"><Input {...form.register("link")} placeholder="/product/something" /></Field>
-      <Field label="Order"><Input type="number" {...form.register("order", { valueAsNumber: true })} /></Field>
-      <UploadField kind="products" label="Product image" value={productImage ?? ""} onChange={(value) => form.setValue("imagePath", value)} className="lg:col-span-2" />
-      <Field label="Status"><div className="flex h-10 items-center rounded-lg border px-3"><label className="flex items-center gap-2 text-sm"><input type="checkbox" {...form.register("active")} /> Active</label></div></Field>
+      <Field label="Title" error={form.formState.errors.title?.message} required><Input {...form.register("title")} /></Field>
+      <Field label="Optional link" error={form.formState.errors.link?.message}><Input {...form.register("link")} placeholder="/product/something" /></Field>
+      <Field label="Order" error={form.formState.errors.order?.message} required><Input type="number" {...form.register("order", { valueAsNumber: true })} /></Field>
+      <UploadField kind="products" label="Product image" value={productImage ?? ""} onChange={(value) => form.setValue("imagePath", value)} className="lg:col-span-2" validationError={form.formState.errors.imagePath?.message} required />
     </div>
   </EditorShell>;
 }
@@ -157,17 +167,22 @@ function SubcategoryEditor({ initial, categories, redirectTo, router, pending, s
   const form = useForm<SubcategoryForm, unknown, SubcategoryInput>({ resolver: zodResolver(subcategorySchema), defaultValues: subcategoryDefaults(initial) });
   useEffect(() => form.reset(subcategoryDefaults(initial)), [initial, form]);
   const categoryId = useWatch({ control: form.control, name: "categoryId" });
+  const nameValue = useWatch({ control: form.control, name: "name" });
+  useEffect(() => {
+    if (nameValue) {
+      form.setValue("slug", slugify(nameValue), { shouldValidate: true });
+    }
+  }, [nameValue, form]);
+
   const submit = (data: SubcategoryInput) => start(async () => {
     const result = await saveSubcategory(initial?.id ?? null, data);
     if (result.ok) { toast.success("Subcategory saved"); router.replace(redirectTo); router.refresh(); } else toast.error(result.error);
   });
   return <EditorShell title={initial ? "Edit subcategory" : "Add subcategory"} description="" badge="Subcategory" onSubmit={form.handleSubmit(submit)} pending={pending} backHref={redirectTo} router={router}>
     <div className="grid gap-4 lg:grid-cols-2">
-      <Field label="Category"><Select value={categoryId ?? ""} onValueChange={(value) => form.setValue("categoryId", value)}><SelectTrigger><SelectValue placeholder="Choose category" /></SelectTrigger><SelectContent>{categories.map((category) => <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>)}</SelectContent></Select></Field>
-      <Field label="Name"><Input {...form.register("name")} /></Field>
-      <Field label="Slug"><Input {...form.register("slug")} /></Field>
-      <Field label="Order"><Input type="number" {...form.register("order", { valueAsNumber: true })} /></Field>
-      <Field label="Status"><div className="flex h-10 items-center rounded-lg border px-3"><label className="flex items-center gap-2 text-sm"><input type="checkbox" {...form.register("active")} /> Active</label></div></Field>
+      <Field label="Category" error={form.formState.errors.categoryId?.message} required><Select value={categoryId ?? ""} onValueChange={(value) => form.setValue("categoryId", value)}><SelectTrigger><SelectValue placeholder="Choose category" /></SelectTrigger><SelectContent>{categories.map((category) => <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>)}</SelectContent></Select></Field>
+      <Field label="Name" error={form.formState.errors.name?.message} required><Input {...form.register("name")} /></Field>
+      <Field label="Order" error={form.formState.errors.order?.message} required><Input type="number" {...form.register("order", { valueAsNumber: true })} /></Field>
     </div>
   </EditorShell>;
 }
@@ -193,23 +208,21 @@ function EditorShell({
 }) {
   return (
     <form onSubmit={onSubmit} className="space-y-6">
-      <Card className="border-primary/15 bg-linear-to-br from-background to-primary/5 shadow-sm">
-        <CardHeader>
-          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-            <div className="space-y-1">
-              <CardTitle className="flex items-center gap-2 text-xl"><Badge variant="secondary">{badge}</Badge>{title}</CardTitle>
-              {description ? <CardDescription className="max-w-2xl text-sm leading-6">{description}</CardDescription> : null}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" type="button" onClick={() => router.push(backHref)}>Cancel</Button>
-              <Button type="submit" disabled={pending}>
-                <SaveIcon className="size-4" />
-                {pending ? "Saving..." : "Save item"}
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-xl font-bold tracking-tight flex items-center gap-2">
+          <Badge variant="secondary">{badge}</Badge>
+          {title}
+        </h1>
+        <div className="flex flex-wrap gap-2 shrink-0">
+          <Button variant="outline" type="button" onClick={() => router.push(backHref)}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={pending}>
+            <SaveIcon className="size-4" />
+            {pending ? "Saving..." : "Save item"}
+          </Button>
+        </div>
+      </div>
       <Card>
         <CardContent className="space-y-6 p-5 md:p-6">{children}</CardContent>
       </Card>
@@ -217,29 +230,69 @@ function EditorShell({
   );
 }
 
-function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+function Field({
+  label,
+  error,
+  required,
+  children,
+  className,
+}: {
+  label: string;
+  error?: string;
+  required?: boolean;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const hasError = !!error;
+  const clonedChild = React.isValidElement(children)
+    ? React.cloneElement(children as React.ReactElement<any>, {
+        "aria-invalid": hasError ? "true" : undefined,
+        className: cn(
+          (children as React.ReactElement<any>).props.className,
+          hasError && "border-destructive focus-visible:ring-destructive/20 focus:border-destructive focus:ring-destructive/20"
+        ),
+      })
+    : children;
+
   return (
-    <div className={cn("grid gap-2", className)}>
-      <Label>{label}</Label>
-      {children}
+    <div className={cn("grid gap-1.5", className)}>
+      <Label className="flex items-center gap-0.5 text-sm font-semibold">
+        {label}
+        {required && <span className="text-destructive font-bold">*</span>}
+      </Label>
+      {clonedChild}
+      {error && (
+        <p className="text-[0.8rem] font-medium text-destructive mt-0.5">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
 
 function bannerDefaults(initial?: BannerRecord | null): BannerForm {
-  return { desktopImage: initial?.desktopImage ?? "", mobileImage: initial?.mobileImage ?? "", title: initial?.title ?? "", link: initial?.link ?? "", order: initial?.order ?? 0, active: initial?.active ?? true };
+  return { desktopImage: initial?.desktopImage ?? "", mobileImage: initial?.mobileImage ?? "", title: initial?.title ?? "", link: initial?.link ?? "", order: initial?.order ?? 0, active: initial?.active ?? false };
 }
 
 function categoryDefaults(initial?: CategoryRecord | null): CategoryForm {
-  return { slug: initial?.slug ?? "", name: initial?.name ?? "", tagline: initial?.tagline ?? "", description: initial?.description ?? "", imagePath: initial?.imagePath ?? "", order: initial?.order ?? 0, active: initial?.active ?? true };
+  return { slug: initial?.slug ?? "", name: initial?.name ?? "", tagline: initial?.tagline ?? "", description: initial?.description ?? "", imagePath: initial?.imagePath ?? "", order: initial?.order ?? 0, active: initial?.active ?? false };
 }
 
 function productDefaults(initial?: ProductRecord | null): ProductForm {
-  return { categoryId: initial?.categoryId ?? "", subcategoryId: initial?.subcategoryId ?? "", subcategory: initial?.subcategory ?? "", subcategorySlug: initial?.subcategorySlug ?? "", title: initial?.title ?? "", slug: initial?.slug ?? "", imagePath: initial?.imagePath ?? "", link: initial?.link ?? "", order: initial?.order ?? 0, active: initial?.active ?? true };
+  return { categoryId: initial?.categoryId ?? "", subcategoryId: initial?.subcategoryId ?? "", subcategory: initial?.subcategory ?? "", subcategorySlug: initial?.subcategorySlug ?? "", title: initial?.title ?? "", slug: initial?.slug ?? "", imagePath: initial?.imagePath ?? "", link: initial?.link ?? "", order: initial?.order ?? 0, active: initial?.active ?? false };
 }
 
 function subcategoryDefaults(initial?: SubcategoryRecord | null): SubcategoryForm {
-  return { categoryId: initial?.categoryId ?? "", name: initial?.name ?? "", slug: initial?.slug ?? "", order: initial?.order ?? 0, active: initial?.active ?? true };
+  return { categoryId: initial?.categoryId ?? "", name: initial?.name ?? "", slug: initial?.slug ?? "", order: initial?.order ?? 0, active: initial?.active ?? false };
+}
+
+export function slugify(str: string): string {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 type BannerForm = z.input<typeof bannerSchema>;

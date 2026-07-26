@@ -1,4 +1,4 @@
-import { createReadStream } from "node:fs";
+import { createReadStream, existsSync } from "node:fs";
 import { stat } from "node:fs/promises";
 import path from "node:path";
 import { type NextRequest } from "next/server";
@@ -12,11 +12,19 @@ const mimeTypes: Record<string, string> = {
   svg: "image/svg+xml",
 };
 
-const defaultUploadPath = '/var/www/storage/uploads';
-
 function getUploadRoot() {
   const configuredRoot = process.env.UPLOAD_PATH?.trim();
-  return configuredRoot || defaultUploadPath;
+  if (configuredRoot) {
+    try {
+      if (existsSync(configuredRoot)) {
+        return configuredRoot;
+      }
+    } catch {
+      // Fallback
+    }
+  }
+
+  return path.join(process.cwd(), "var", "www", "storage", "uploads");
 }
 
 function isPathInsideRoot(root: string, target: string) {

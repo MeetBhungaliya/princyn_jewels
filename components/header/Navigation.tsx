@@ -55,7 +55,7 @@ export function Navigation() {
                       <Link
                         key={child.href + child.title}
                         href={child.href}
-                        className="group relative flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-foreground/80 transition-none hover:bg-accent/60 hover:text-foreground before:absolute before:inset-x-2 before:bottom-1 before:h-px before:origin-left before:scale-x-0 before:bg-foreground/60 before:transition-none hover:before:scale-x-100"
+                        className="group relative flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-foreground/80 transition-none hover:text-foreground before:absolute before:inset-x-2 before:bottom-1 before:h-px before:origin-left before:scale-x-0 before:bg-foreground/60 before:transition-transform before:duration-300 before:ease-out hover:before:scale-x-100"
                       >
                         <span className="min-w-0 flex-1">{child.title}</span>
                         <ArrowRight className="size-3.5 shrink-0 text-foreground/50 transition-none group-hover:translate-x-1 group-hover:opacity-100 group-hover:text-foreground" />

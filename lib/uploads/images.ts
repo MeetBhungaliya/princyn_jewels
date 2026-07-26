@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, unlink, writeFile } from "node:fs/promises";
+import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
 export const uploadKinds = ["banners", "categories", "products"] as const;
@@ -12,11 +13,31 @@ const allowed = new Map([
   ["image/svg+xml", "svg"],
 ]);
 const MAX_BYTES = 5 * 1024 * 1024;
-const defaultUploadPath = "/var/www/storage/uploads";
+
+let cachedUploadRoot: string | null = null;
 
 function getUploadRoot() {
+  if (cachedUploadRoot) return cachedUploadRoot;
+
   const configuredRoot = process.env.UPLOAD_PATH?.trim();
-  return configuredRoot || defaultUploadPath;
+  if (configuredRoot) {
+    try {
+      if (!existsSync(configuredRoot)) {
+        mkdirSync(configuredRoot, { recursive: true });
+      }
+      cachedUploadRoot = configuredRoot;
+      return configuredRoot;
+    } catch {}
+  }
+
+  const localFallback = path.join(process.cwd(), "var", "www", "storage", "uploads");
+  try {
+    if (!existsSync(localFallback)) {
+      mkdirSync(localFallback, { recursive: true });
+    }
+  } catch {}
+  cachedUploadRoot = localFallback;
+  return localFallback;
 }
 
 function isPathInsideRoot(root: string, target: string) {
