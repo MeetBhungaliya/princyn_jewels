@@ -23,7 +23,7 @@ export default function AdminRootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${plusJakartaSans.className} min-h-screen bg-background text-foreground antialiased`}>
+      <body className={`${plusJakartaSans.className} min-h-screen bg-background text-foreground antialiased admin-body`}>
         <Providers>{children}</Providers>
       </body>
     </html>

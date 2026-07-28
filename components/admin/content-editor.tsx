@@ -339,7 +339,7 @@ function ProductEditor({
     name: "subcategoryId",
   });
   const titleValue = useWatch({ control: form.control, name: "title" });
-  const metalType = useWatch({ control: form.control, name: "metalType" });
+  const metalType = useWatch({ control: form.control, name: "metalType" }) as string | undefined;
   useEffect(() => {
     if (titleValue) {
       form.setValue("slug", slugify(titleValue), { shouldValidate: true });
@@ -473,7 +473,7 @@ function ProductEditor({
           </Field>
           <Field label="Metal Type" error={form.formState.errors.metalType?.message}>
             <Select
-              value={metalType || "none"}
+              value={(metalType as string) || "none"}
               onValueChange={(value: string) => {
                 const newValue = value === "none" ? "" : value;
                 form.setValue("metalType", newValue as any);
@@ -496,7 +496,7 @@ function ProductEditor({
           <div className={cn("transition-opacity duration-200", metalType === "gold" ? "opacity-100" : "opacity-40 pointer-events-none")}>
             <Field label="Karat" error={form.formState.errors.karat?.message}>
               <Select
-                value={form.watch("karat") || "none"}
+                value={(form.watch("karat") as string) || "none"}
                 onValueChange={(value: string) => {
                   const newValue = value === "none" ? "" : value;
                   form.setValue("karat", newValue as any);
@@ -721,14 +721,14 @@ function Field({
     : children;
 
   return (
-    <div className={cn("grid gap-1.5", className)}>
+    <div className={cn("relative pb-5 grid gap-1.5", className)}>
       <Label className="flex items-center gap-0.5 text-sm font-semibold">
         {label}
         {required && <span className="text-destructive font-bold">*</span>}
       </Label>
       {clonedChild}
       {error && (
-        <p className="text-[0.8rem] font-medium text-destructive mt-0.5">
+        <p className="absolute bottom-0 left-0 text-[0.8rem] font-medium text-destructive">
           {error}
         </p>
       )}

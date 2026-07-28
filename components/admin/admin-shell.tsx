@@ -77,7 +77,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     )?.[1] ?? null;
 
   return (
-    <SidebarProvider className="h-screen w-screen overflow-hidden bg-muted/30">
+    <SidebarProvider className="h-screen w-full overflow-hidden bg-muted/30">
       <Sidebar className="border-r">
         <SidebarContent>
           <SidebarHeader className="flex h-16 items-center px-4 border-b">

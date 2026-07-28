@@ -21,12 +21,58 @@ const IGNORABLE_SQL_ERROR_CODES = new Set([
   "42P07", // relation already exists
   "42710", // duplicate object
   "23505", // unique violation
+  "42701", // duplicate column
 ]);
 
 async function executeMigrationStatement(
   db: PgliteDatabase<any>,
   statement: string,
 ): Promise<void> {
+  // Check for ALTER TABLE ADD COLUMN
+  const addColumnMatch = statement.match(/ALTER\s+TABLE\s+"([^"]+)"\s+ADD\s+COLUMN\s+(?:IF\s+NOT\s+EXISTS\s+)?"([^"]+)"/i);
+  if (addColumnMatch) {
+    const table = addColumnMatch[1];
+    const column = addColumnMatch[2];
+    const res = await db.execute(sql.raw(`
+      SELECT 1 FROM information_schema.columns 
+      WHERE table_name = '${table}' AND column_name = '${column}'
+    `));
+    if (res.rows.length > 0) {
+      console.log(`[db] Skipped duplicate column creation: "${table}"."${column}"`);
+      return;
+    }
+  }
+
+  // Check for ALTER TABLE DROP COLUMN
+  const dropColumnMatch = statement.match(/ALTER\s+TABLE\s+"([^"]+)"\s+DROP\s+COLUMN\s+(?:IF\s+EXISTS\s+)?"([^"]+)"/i);
+  if (dropColumnMatch) {
+    const table = dropColumnMatch[1];
+    const column = dropColumnMatch[2];
+    const res = await db.execute(sql.raw(`
+      SELECT 1 FROM information_schema.columns 
+      WHERE table_name = '${table}' AND column_name = '${column}'
+    `));
+    if (res.rows.length === 0) {
+      console.log(`[db] Skipped drop column (does not exist): "${table}"."${column}"`);
+      return;
+    }
+  }
+
+  // Check for CREATE TABLE
+  const createTableMatch = statement.match(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?"([^"]+)"/i);
+  if (createTableMatch) {
+    const table = createTableMatch[1];
+    const res = await db.execute(sql.raw(`
+      SELECT 1 FROM information_schema.tables 
+      WHERE table_name = '${table}'
+    `));
+    if (res.rows.length > 0) {
+      console.log(`[db] Skipped duplicate table creation: "${table}"`);
+      return;
+    }
+  }
+
+  console.log(`[db] Executing statement: ${statement.substring(0, 100)}${statement.length > 100 ? "..." : ""}`);
   try {
     await db.execute(sql.raw(statement));
   } catch (error: any) {

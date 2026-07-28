@@ -234,3 +234,41 @@
 .dark .luxury-header {
   background-color: #121212;
 }
+
+/* Custom Scrollbars to help non-technical clients locate scroll areas */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(198, 168, 107, 0.05);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(198, 168, 107, 0.45); /* Gold primary color with opacity */
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(198, 168, 107, 0.75);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Firefox scrollbar support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(198, 168, 107, 0.45) rgba(198, 168, 107, 0.05);
+}
+
+/* Hide scrollbar on body for desktop admin layout to prevent double scrollbars */
+@media (min-width: 1024px) {
+  .admin-body {
+    overflow: hidden !important;
+    height: 100vh !important;
+  }
+}
