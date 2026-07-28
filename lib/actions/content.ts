@@ -141,7 +141,34 @@ export async function saveProduct(id: string | null, raw: unknown): Promise<Resu
     if (!subcategory || subcategory.categoryId !== data.categoryId) {
       throw new Error("Choose a subcategory that belongs to the selected category.");
     }
+    
+    // Resolve subcategory fields
     const resolved = { ...data, subcategory: subcategory.name, subcategorySlug: subcategory.slug };
+    
+    // Ensure slug uniqueness
+    const { db } = await import("@/lib/db");
+    const { products } = await import("@/lib/db/schema");
+    const { and, eq, ne } = await import("drizzle-orm");
+    
+    const baseSlug = resolved.slug;
+    let uniqueSlug = baseSlug;
+    let counter = 1;
+    
+    while (true) {
+      const existing = await db.select().from(products).where(
+        id 
+          ? and(eq(products.slug, uniqueSlug), ne(products.id, id))
+          : eq(products.slug, uniqueSlug)
+      );
+      if (existing.length === 0) {
+        break;
+      }
+      uniqueSlug = `${baseSlug}-${counter}`;
+      counter++;
+    }
+    
+    resolved.slug = uniqueSlug;
+
     if (id) {
       const old = await productRepository.byId(id);
       await productRepository.update(id, resolved);
