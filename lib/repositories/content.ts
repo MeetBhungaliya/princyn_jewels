@@ -26,7 +26,18 @@ export const subcategoryRepository = {
   async byId(id: string) { await ready(); return (await db.select().from(subcategories).where(eq(subcategories.id, id)))[0]; },
   async forCategory(categoryId: string) { await ready(); return db.select().from(subcategories).where(and(eq(subcategories.categoryId, categoryId), eq(subcategories.active, true))).orderBy(asc(subcategories.order), asc(subcategories.name)); },
   async create(data: SubcategoryInput) { await ready(); return (await db.insert(subcategories).values(data).returning())[0]; },
-  async update(id: string, data: SubcategoryInput) { await ready(); return (await db.update(subcategories).set({ ...data, updatedAt: new Date() }).where(eq(subcategories.id, id)).returning())[0]; },
+  async update(id: string, data: SubcategoryInput) { 
+    await ready(); 
+    const updatedSubcategory = (await db.update(subcategories).set({ ...data, updatedAt: new Date() }).where(eq(subcategories.id, id)).returning())[0]; 
+    if (updatedSubcategory) {
+      await db.update(products).set({
+        subcategory: updatedSubcategory.name,
+        subcategorySlug: updatedSubcategory.slug,
+        updatedAt: new Date(),
+      }).where(eq(products.subcategoryId, id));
+    }
+    return updatedSubcategory;
+  },
   async remove(id: string) { await ready(); return (await db.delete(subcategories).where(eq(subcategories.id, id)).returning())[0]; },
 };
 export const productRepository = {
