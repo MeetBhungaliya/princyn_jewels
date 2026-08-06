@@ -105,3 +105,9 @@ export const products = pgTable("products", {
   active: boolean("active").notNull().default(true),
   ...timestamps,
 });
+
+export const rateLimits = pgTable("rate_limits", {
+  ip: text("ip").primaryKey(),
+  count: integer("count").notNull().default(1),
+  resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
+});

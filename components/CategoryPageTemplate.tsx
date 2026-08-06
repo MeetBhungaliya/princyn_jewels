@@ -25,6 +25,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { SubcategoryGrid, type Subcategory as GridSubcategory } from "./store/SubcategoryGrid";
 
 
 export interface Product {
@@ -247,31 +248,15 @@ export default function CategoryPageTemplate({
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                  {subcategories.map((sub) => {
-                    const IconComponent = ICON_MAP[sub.id] || Gem;
-                    return (
-                      <Link
-                        key={sub.id}
-                        href={`/category/${categorySlug}/${sub.id}`}
-                        className="group relative flex flex-col items-center justify-center p-6 md:p-8 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-sm hover:shadow-md hover:border-[var(--color-primary)] transition-all duration-300 text-center cursor-pointer min-h-[140px] md:min-h-[160px]"
-                      >
-                        {/* Decorative background element */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                        {/* Icon Container */}
-                        <div className="mb-4 p-3 rounded-full bg-[var(--color-surface-secondary)] border border-[var(--color-border)] group-hover:bg-[var(--color-primary)] group-hover:text-white transition-colors duration-300">
-                          <IconComponent className="w-6 h-6 text-[var(--color-primary)] group-hover:text-white transition-colors" />
-                        </div>
-
-                        {/* Text */}
-                        <h3 className="text-sm font-medium tracking-wide text-[var(--color-foreground)] group-hover:text-[var(--color-primary)] capitalize transition-colors duration-300">
-                          {toTitleCase(sub.name)}
-                        </h3>
-                      </Link>
-                    );
-                  })}
-                </div>
+                <SubcategoryGrid 
+                  categorySlug={categorySlug} 
+                  subcategories={subcategories.map(sub => ({
+                    name: sub.name,
+                    slug: sub.id,
+                    icon: sub.id,
+                    productCount: products.filter(p => p.subcategory?.toLowerCase() === sub.name.toLowerCase()).length
+                  }))}
+                />
               </motion.div>
             ) : (
               // 2. PRODUCTS LIST VIEW WITH TABS FILTER

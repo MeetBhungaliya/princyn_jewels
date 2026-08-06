@@ -14,7 +14,6 @@ import { usePathname } from "next/navigation";
 import { AdminBreadcrumb } from "@/components/admin/admin-breadcrumb";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +24,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
-  useSidebar
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 const nav = [
@@ -42,7 +41,11 @@ function AdminNavLinks({ pathname }: { pathname: string }) {
     <SidebarMenu>
       {nav.map(({ href, label, icon: Icon }) => (
         <SidebarMenuItem key={href}>
-          <SidebarMenuButton asChild isActive={pathname.startsWith(href)} className="h-10 px-3 transition-all duration-200">
+          <SidebarMenuButton
+            asChild
+            isActive={pathname.startsWith(href)}
+            className="h-10 px-3 transition-all duration-200"
+          >
             <Link
               href={href}
               className="flex w-full items-center gap-3.5 text-sm md:text-[0.95rem] font-medium"
@@ -82,20 +85,36 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <SidebarContent>
           <SidebarHeader className="flex h-16 items-center px-4 border-b">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <Image
-                src="/logo.png"
-                alt="Princyn Jewels"
-                width={40}
-                height={40}
-                className="h-10 w-10 rounded-lg object-contain transition-transform group-hover:scale-105"
-              />
-              <div className="flex flex-col text-left text-primary">
-                <span className="font-serif text-[1.05rem] font-bold tracking-[0.18em] uppercase leading-none transition-colors group-hover:text-primary/90">
+              <div
+                className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full transition-all duration-500"
+                style={{
+                  border: `1.5px solid rgba(var(--color-gold-rgb),0.45)`,
+                  backgroundColor: "rgba(var(--color-gold-rgb),0.07)",
+                }}
+              >
+                <Image
+                  src="/logo.png"
+                  alt="Princyn Jewels"
+                  width={36}
+                  height={36}
+                  priority
+                  className="object-contain"
+                />
+              </div>
+
+              <div className="leading-none">
+                <div
+                  className="font-serif text-[0.95rem] uppercase tracking-[0.28em] transition-all duration-500"
+                  style={{ color: "var(--color-gold)" }}
+                >
                   Princyn
-                </span>
-                <span className="text-[0.62rem] font-semibold tracking-[0.42em] uppercase leading-none mt-1 transition-colors group-hover:text-primary/90">
+                </div>
+                <div
+                  className="text-[0.48rem] font-semibold uppercase tracking-[0.6em] transition-all duration-500"
+                  style={{ color: "var(--color-gold-dark)" }}
+                >
                   Jewels
-                </span>
+                </div>
               </div>
             </Link>
           </SidebarHeader>

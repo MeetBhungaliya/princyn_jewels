@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { Menu } from "lucide-react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "motion/react";
-import { useTheme } from "next-themes";
-import { Menu } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Navigation } from "@/components/header/Navigation";
 import { MobileSidebar } from "@/components/header/MobileSidebar";
+import { Navigation } from "@/components/header/Navigation";
 
 const GOLD = "var(--color-gold)";
 

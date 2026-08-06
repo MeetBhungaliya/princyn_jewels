@@ -1,33 +1,23 @@
-"use client";
-
-import React, { useState } from "react";
+import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, MapPin, ArrowRight, HelpCircle } from "lucide-react";
-import { FaInstagram, FaFacebook, FaYoutube, FaWhatsapp } from "react-icons/fa";
+import React from "react";
+import { FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import Newsletter from "./Newsletter";
 
 const GOLD = "var(--color-gold)";
 
 const socials = [
-  { icon: FaInstagram, href: "#", label: "Instagram" },
-  { icon: FaFacebook, href: "#", label: "Facebook" },
-  { icon: FaYoutube, href: "#", label: "YouTube" },
+  { icon: FaInstagram, href: "https://www.instagram.com/princynjewels", label: "Instagram" },
+  {
+    icon: FaFacebook,
+    href: "https://www.facebook.com/share/19FqUYSXd1",
+    label: "Facebook",
+  },
   { icon: FaWhatsapp, href: "https://wa.me/+918320828901", label: "WhatsApp" },
 ];
 
 export function Footer() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail("");
-      setTimeout(() => setSubscribed(false), 5000);
-    }
-  };
-
   return (
     <footer className="w-full bg-[var(--color-surface)] border-t border-[var(--color-border)] text-[var(--color-foreground)] transition-colors duration-300">
       {/* Upper Footer: Main columns */}
@@ -123,7 +113,7 @@ export function Footer() {
                   href="/category/kids"
                   className="text-[var(--color-foreground-secondary)] hover:text-[var(--color-primary)] transition-colors duration-200"
                 >
-                  Kids&apos; Collection
+                  Kid&apos;s Collection
                 </Link>
               </li>
               <li>
@@ -131,7 +121,7 @@ export function Footer() {
                   href="/category/other"
                   className="text-[var(--color-foreground-secondary)] hover:text-[var(--color-primary)] transition-colors duration-200"
                 >
-                  Luxury Accessories
+                  Other Collection
                 </Link>
               </li>
             </ul>
@@ -151,7 +141,9 @@ export function Footer() {
                   className="size-4 shrink-0 mt-0.5"
                   style={{ color: GOLD }}
                 />
-                <span>101 Royal Plaza, Diamond District, IN</span>
+                <span>
+                  1st Floor Morlidhar Complex, Pipals Char Rasta, Katargam, Surat-395004
+                </span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="size-4 shrink-0" style={{ color: GOLD }} />
@@ -172,7 +164,7 @@ export function Footer() {
                 </a>
               </li>
 
-              <li className="flex items-center gap-2.5">
+              {/* <li className="flex items-center gap-2.5">
                 <HelpCircle
                   className="size-4 shrink-0"
                   style={{ color: GOLD }}
@@ -183,7 +175,7 @@ export function Footer() {
                 >
                   FAQs & Help Center
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -199,30 +191,7 @@ export function Footer() {
               Subscribe to receive updates on new arrivals, secret sales, and
               exclusive brand events.
             </p>
-            <form onSubmit={handleSubscribe} className="flex flex-col gap-2.5">
-              <div className="relative flex items-center">
-                <input
-                  type="email"
-                  placeholder="Your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-sm rounded-full py-2.5 pl-4 pr-10 outline-none focus:border-[var(--color-primary)] transition-colors text-[var(--color-foreground)]"
-                />
-                <button
-                  type="submit"
-                  aria-label="Subscribe"
-                  className="absolute right-1 top-1 bottom-1 aspect-square rounded-full bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] flex items-center justify-center transition-colors cursor-pointer"
-                >
-                  <ArrowRight className="size-4" />
-                </button>
-              </div>
-              {subscribed && (
-                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium pl-2">
-                  Thank you for subscribing!
-                </span>
-              )}
-            </form>
+            <Newsletter />
           </div>
         </div>
       </div>

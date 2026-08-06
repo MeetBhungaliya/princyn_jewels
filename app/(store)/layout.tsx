@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/css/globals.css";
 import Providers from "@/providers";
-import { Footer } from "@/components/Footer";
+import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { WhatsAppFloatingButton } from "@/components/WhatsAppFloatingButton";
 
